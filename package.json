@@ -1,0 +1,21 @@
+{
+  "name": "iantoo-week",
+  "version": "1.0.0",
+  "description": "一款基于手机版的横向滚动日历组件",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack --config ./main.js ",
+    "build": "webpack --mode=production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xiangzongliang/iantoo-week.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xiangzongliang/iantoo-week/issues"
+  },
+  "homepage": "https://github.com/xiangzongliang/iantoo-week#readme"
+}
