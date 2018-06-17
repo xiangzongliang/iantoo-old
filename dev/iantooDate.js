@@ -1,6 +1,8 @@
 import "../less/iantooDate.less"
-let a = 1000;
+
+let a = 10077770;
 let b = (num) =>{
     console.log(num)
 }
+
 b(a);

@@ -1,21 +1,21 @@
 const path = require('path')
 const webpack = require('webpack')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const CleanWebpackPlugin = require('clean-webpack-plugin')
+let [ extractCSS , extractLESS , extractSASS ] = [ new ExtractTextPlugin('css/[name].css') , new ExtractTextPlugin('css/[name].css') , new ExtractTextPlugin('css/[name].css') ],
+//生成模版配置
+HtmlConfig = {
+	title:'this title',
+	template: './template/index.html',
+	chunks: ['iantooDate'], //chunks主要用于多入口文件，当你有多个入口文件，那就回编译后生成多个打包后的文件，那么chunks 就能选择你要使用那些js文件
+	filename: 'iantoo.html',
+},
 
 
 
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-let extractCSS = new ExtractTextPlugin('css/[name].css');
-let extractLESS = new ExtractTextPlugin('css/[name].css');
-let extractSASS = new ExtractTextPlugin('css/[name].css');
-
-
-
-
-
-
-
-module.exports = {
+config = {
 	mode:'production', //production || development
 	entry: {
 		'iantooweek':path.resolve(__dirname, './dev/iantooweek'),
@@ -23,7 +23,7 @@ module.exports = {
 	},
 	output: {
 		path: path.resolve(__dirname, './build'), // var buildDir = path.resolve(__dirname, './build');
-		publicPath: './build/',//publicPath参数表示的是一个URL路径（指向生成文件的根目录），用于生成css/js/图片/字体文件等资源的路径，以确保网页能正确地加载到这些资源。
+		publicPath: '/',//publicPath参数表示的是一个URL路径（指向生成文件的根目录），用于生成css/js/图片/字体文件等资源的路径，以确保网页能正确地加载到这些资源。
 		filename: 'js/[name].js',
 		/* filename属性表示的是如何命名生成出来的入口文件，规则有以下三种：
 		[name]，指代入口文件的name，也就是上面提到的entry参数的key
@@ -70,7 +70,8 @@ module.exports = {
 			}
 		]
 	},
-    plugins: [
+	plugins: [
+    	new CleanWebpackPlugin(['./build']), //清除之前的缓存文件
     	//DOC : https://www.npmjs.com/package/uglifyjs-webpack-plugin
         new UglifyJsPlugin({
             test: /\.js($|\?)/i,
@@ -78,7 +79,61 @@ module.exports = {
             cache:false,
             parallel: true,
         }),
-        extractCSS,extractLESS,extractSASS
+        extractCSS,extractLESS,extractSASS,
+
+        new HtmlWebpackPlugin(HtmlConfig)
     ]
 };
+
+
+
+
+
+
+
+if(process.env.NODE_ENV == 'development'){
+	config.mode = 'development',
+	config.watch = true //开启实时监听
+	config.watchOptions = { //监听配置
+		aggregateTimeout: 300, //允许延迟编译,默认300
+		poll: 1000, //在指定的毫秒内轮询编译
+		ignored: ['node_modules','build'], //不监听的文件夹
+	}
+	config.devServer = {
+		contentBase: path.join(__dirname, "assets"), //非webpack编译的文件来源
+		port: 9000,
+		// host:'localhost',
+		// index:'index.html',
+
+
+		headers: {  //设置请求头
+			"X-Custom-Foo": "bar"
+		},
+
+		// /*
+		// proxy: { //代理服务
+		// 	"/api": "http://localhost:3000"
+		// }
+		// */
+
+
+		// historyApiFallback: { //所有404页面转向
+		// 	rewrites: [
+		// 		{ from: /^\/$/, to: '/404.html' }
+		// 	]
+		// },
+		open:true, //打开页面
+		openPage:'iantoo.html',
+
+		compress: true, //一切服务都启用gzip 压缩
+		lazy: false,//惰性模式
+		overlay: { //在存在编译器错误或警告时显示浏览器中的全屏覆盖
+			warnings: true,
+			errors: true
+		}
+	}
+}
+
+
+module.exports = config
 

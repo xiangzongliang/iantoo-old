@@ -1,0 +1,11 @@
+html,
+body {
+  background: #33b5e5;
+}
+.iantooDate {
+  margin: 0;
+  padding: 0;
+}
+.iantooDate .week {
+  background: #ff8800;
+}

@@ -1,14 +1,14 @@
 {
     "name": "iantoo-date",
     "version": "1.0.0",
-    "description": "一款基于移动端的日历组件",
+    "description": "iantoo",
     "main": "webpack.config.js",
     "directories": {
         "lib": "lib"
     },
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "dev": "webpack --config ./main.js",
+        "dev": "NODE_ENV=development webpack-dev-server --config ./main.js",
         "build": "webpack --config ./main.js"
     },
     "author": "xiangzongliang",
@@ -17,6 +17,7 @@
         "babel-core": "^6.26.3",
         "babel-loader": "^7.1.4",
         "css-loader": "^0.28.11",
+        "less": "^3.0.4",
         "less-loader": "^4.1.0",
         "sass-loader": "^7.0.3",
         "style-loader": "^0.21.0",
@@ -25,6 +26,9 @@
         "webpack-cli": "^3.0.7"
     },
     "devDependencies": {
-        "extract-text-webpack-plugin": "^4.0.0-beta.0"
+        "clean-webpack-plugin": "^0.1.19",
+        "extract-text-webpack-plugin": "^4.0.0-beta.0",
+        "html-webpack-plugin": "^3.2.0",
+        "webpack-dev-server": "^3.1.4"
     }
 }
