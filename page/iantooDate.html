@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iantooDate</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi = medium-dpi" />
+<link href="../css/iantooDate.css" rel="stylesheet"></head>
+<body>
+<div id="rili"></div>
+<button id="openDate">点击打开</button>
+
+<style>
+	html,body{
+		margin: 0;
+		padding: 0;
+	}
+	#rili{
+		width: 100%;
+		margin-top: 30px;
+		position: relative;
+	}
+	#openDate{
+		margin: 30px auto;
+		display: block;
+		border-radius: 300px;
+		width: 300px;
+		height: 3rem;
+		line-height: 3rem;
+		box-sizing: border-box;
+		background: #ffffff;
+		box-shadow: 0px 0px 5px #c4c4c4;
+		font-size: 1.2rem;
+		border: none;
+		color: #c4c4c4;
+	}
+</style>
+	
+<script type="text/javascript" src="../js/iantooDate.js"></script>
+<script type="text/javascript">
+	document.getElementById('openDate').onclick = function (ev) {
+		iantoo.date({
+			el:'#rili',
+			date:'2018-06-01 23:45:32',
+			lang:'cn',
+			rollDirection:'UD', // 'LR' || 'UD'
+			header:true,
+			week:true,
+			mask:{
+				show:true,  //是否显示遮罩
+				closePage:true //点击遮罩是否关闭页面
+			},
+			elastic:0.3,
+			theme:['#2A92EB','#D8D8D8','#c4c4c4'],
+			move:true,
+			sign:["2018-05-25",'2018-05-30','2018-06-10'],
+			clickDay:function (data) {
+				console.log(data)
+			},
+			slide:function (data) {
+				console.log(data)
+				//每次更新并切换了日历完成才会调用
+			},
+			render:function () {
+				//每次打开日历渲染完成只会调用一次
+				console.info('初始化渲染完成')
+			},
+			close:function () {
+				//关闭了日历的回调
+				console.log('关闭了日历')
+
+			}
+		})
+	}
+</script>
+</body>
+</html>

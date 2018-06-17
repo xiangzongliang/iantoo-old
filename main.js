@@ -7,9 +7,9 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 let [ extractCSS , extractLESS , extractSASS ] = [ new ExtractTextPlugin('css/[name].css') , new ExtractTextPlugin('css/[name].css') , new ExtractTextPlugin('css/[name].css') ],
 //生成模版配置
 HtmlConfig = {
-	title:'this title',
+	title:'this page title',
 	template: './template/index.html',
-	chunks: ['iantooDate'], //chunks主要用于多入口文件，当你有多个入口文件，那就回编译后生成多个打包后的文件，那么chunks 就能选择你要使用那些js文件
+	chunks: ['iantooweek'], //chunks主要用于多入口文件，当你有多个入口文件，那就回编译后生成多个打包后的文件，那么chunks 就能选择你要使用那些js文件
 	filename: 'iantoo.html',
 },
 
@@ -78,7 +78,12 @@ config = {
             exclude: [path.resolve(__dirname, "node_modules")],
             cache:false,
             parallel: true,
+            sourceMap:false,
+            uglifyOptions:{
+                safari10:true,
+            }
         }),
+	        
         extractCSS,extractLESS,extractSASS,
 
         new HtmlWebpackPlugin(HtmlConfig)
@@ -99,8 +104,22 @@ if(process.env.NODE_ENV == 'development'){
 		poll: 1000, //在指定的毫秒内轮询编译
 		ignored: ['node_modules','build'], //不监听的文件夹
 	}
+	config.plugins = [
+        new UglifyJsPlugin({
+            test: /\.js($|\?)/i,
+            exclude: [path.resolve(__dirname, "node_modules")],
+            cache:false,
+            parallel: true,
+            sourceMap:false,
+            uglifyOptions:{
+                safari10:true,
+            }
+        }),
+        extractCSS,extractLESS,extractSASS,
+        new HtmlWebpackPlugin(HtmlConfig)
+    ]
 	config.devServer = {
-		contentBase: path.join(__dirname, "assets"), //非webpack编译的文件来源
+		contentBase: path.join(__dirname, "./"), //非webpack编译的文件来源
 		port: 9000,
 		// host:'localhost',
 		// index:'index.html',

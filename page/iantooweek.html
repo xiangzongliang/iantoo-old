@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iantooweek</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi = medium-dpi" />
+<link href="../css/iantooweek.css" rel="stylesheet"></head>
+<body>
+<div class="iantooDateWeek"></div>
+	
+<script type="text/javascript" src="../js/iantooweek.js"></script>
+<script type="text/javascript">
+	iantoo.week({
+		el:'.iantooDateWeek',
+		date:'2018-6-18',
+		showWeek:true,
+		sign:['2018-06-10','2018-6-18','2018-06-20'],
+		theme:{
+			selectGB:'#33b5e5',
+			selectFontColor:'#ffffff',
+			systemBG:'#ffffff',
+			systemFontColor:'#33b5e5',
+		},
+		clickDate:function (data) {
+			console.log(data)
+		},
+		render:function (data,systemDate) {
+			console.log('首次渲染完成',data,systemDate)
+		},
+		updataRender:function (data) {
+			console.log(data)
+		}
+	})
+</script>
+</body>
+</html>

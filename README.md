@@ -1,10 +1,1 @@
-"babel-core": "^6.26.3",
-        "babel-loader": "^7.1.4",
-        "babel-preset-es2015": "^6.24.1",
-        "css-loader": "^0.28.11",
-        "less-loader": "^4.1.0",
-        "style-loader": "^0.21.0",
-        "uglifyjs-webpack-plugin": "^1.2.5",
-        "webpack": "^4.9.1",
-        "webpack-cli": "^3.0.7",
-        "extract-text-webpack-plugin": "^4.0.0-beta.0"
+### iantoo 基于手机端的系列模块组件，其中包括日历组件

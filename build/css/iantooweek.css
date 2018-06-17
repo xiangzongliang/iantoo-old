@@ -1,0 +1,63 @@
+*,
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+.iantooWeek {
+  position: relative;
+  width: 100%;
+  height: auto;
+}
+.iantooWeek .weekBar {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: #565D65;
+  box-sizing: border-box;
+  padding: 8px 10px;
+}
+.iantooWeek .weekBar a {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.iantooWeek .calendarBox {
+  position: relative;
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
+}
+.iantooWeek .weekBox {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  padding: 0px 10px;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+.iantooWeek .weekBox a {
+  align-items: center;
+  font-size: 15px;
+  text-align: center;
+  padding: 10px 4% 15px 4%;
+  position: relative;
+  box-sizing: border-box;
+}
+.iantooWeek .weekBox a span {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  bottom: 6px;
+  left: 50%;
+  margin-left: -3.5px;
+  border-radius: 10px;
+  background: #33b5e5;
+}
+.iantooWeek .weekBox .today,
+.iantooWeek .weekBox .today.systemDate {
+  border-radius: 4px;
+}
+.iantooWeek .weekBox .today span {
+  background: #fff;
+}
