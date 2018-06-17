@@ -1,21 +1,30 @@
 {
-  "name": "iantoo-week",
-  "version": "1.0.0",
-  "description": "一款基于手机版的横向滚动日历组件",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack --config ./main.js ",
-    "build": "webpack --mode=production"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/xiangzongliang/iantoo-week.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/xiangzongliang/iantoo-week/issues"
-  },
-  "homepage": "https://github.com/xiangzongliang/iantoo-week#readme"
+    "name": "iantoo-date",
+    "version": "1.0.0",
+    "description": "一款基于移动端的日历组件",
+    "main": "webpack.config.js",
+    "directories": {
+        "lib": "lib"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "dev": "webpack --config ./main.js",
+        "build": "webpack --config ./main.js"
+    },
+    "author": "xiangzongliang",
+    "license": "ISC",
+    "dependencies": {
+        "babel-core": "^6.26.3",
+        "babel-loader": "^7.1.4",
+        "css-loader": "^0.28.11",
+        "less-loader": "^4.1.0",
+        "sass-loader": "^7.0.3",
+        "style-loader": "^0.21.0",
+        "uglifyjs-webpack-plugin": "^1.2.5",
+        "webpack": "^4.12.0",
+        "webpack-cli": "^3.0.7"
+    },
+    "devDependencies": {
+        "extract-text-webpack-plugin": "^4.0.0-beta.0"
+    }
 }

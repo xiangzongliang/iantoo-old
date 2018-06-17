@@ -1,12 +1,25 @@
 const path = require('path')
+const webpack = require('webpack')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+
+
+
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+let extractCSS = new ExtractTextPlugin('css/[name].css');
+let extractLESS = new ExtractTextPlugin('css/[name].css');
+let extractSASS = new ExtractTextPlugin('css/[name].css');
+
+
 
 
 
 
 
 module.exports = {
+	mode:'production', //production || development
 	entry: {
-		'iantooweek':path.resolve(__dirname, './dev/iantooweek')
+		'iantooweek':path.resolve(__dirname, './dev/iantooweek'),
+		'iantooDate':path.resolve(__dirname, './dev/iantooDate'),
 	},
 	output: {
 		path: path.resolve(__dirname, './build'), // var buildDir = path.resolve(__dirname, './build');
@@ -22,7 +35,7 @@ module.exports = {
 	},
 	module: {
 		rules: [{
-				test: /\.jsx$/,
+				test: /\.js$/,
 				include: [
 					path.resolve(__dirname, "dev"),
 				],
@@ -30,8 +43,42 @@ module.exports = {
 					path.resolve(__dirname, "node_modules"),
 				],
 				loader: "babel-loader"
-			},
+			},{
+				test: /\.css$/,
+				exclude:[
+					path.resolve(__dirname, "node_modules"),
+				],
+				use:ExtractTextPlugin.extract({
+                    use:['css-loader']
+                })//不再需要style-loader
+			},{
+				test: /\.less$/,
+				exclude:[
+					path.resolve(__dirname, "node_modules"),
+				],
+				use:ExtractTextPlugin.extract({
+                    use:['css-loader','less-loader']
+                })
+			},{
+				test: /\.scss$/,
+				exclude:[
+					path.resolve(__dirname, "node_modules"),
+				],
+				use:ExtractTextPlugin.extract({
+                    use:['css-loader','sass-loader']
+                })
+			}
 		]
-	}
+	},
+    plugins: [
+    	//DOC : https://www.npmjs.com/package/uglifyjs-webpack-plugin
+        new UglifyJsPlugin({
+            test: /\.js($|\?)/i,
+            exclude: [path.resolve(__dirname, "node_modules")],
+            cache:false,
+            parallel: true,
+        }),
+        extractCSS,extractLESS,extractSASS
+    ]
 };
 
