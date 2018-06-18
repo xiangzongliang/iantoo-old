@@ -14,24 +14,24 @@
 |-- build				//打包生成的目录,通常用于生产引入使用   
 |--	 |-- css   			
 |--	 |-- js	   		
-|-- dev					//开发目录
-|--	 |-- \*.js
-|-- less				//less目录
-|-- page				//页面,对应每个模块的使用方法调用
-|-- template			//模版目录,主要用于生成模板html
-|--	 |-- index.html 	
-|-- 404.html 			//404
-|-- main.js				//入口打包文件
-|-- package.jsom
+|-- dev					//开发目录   
+|--	 |-- \*.js    
+|-- less				//less目录   
+|-- page				//页面,对应每个模块的使用方法调用   
+|-- template			//模版目录,主要用于生成模板html   
+|--	 |-- index.html    	
+|-- 404.html 			//404   
+|-- main.js				//入口打包文件   
+|-- package.jsom   
 
 
 
 
 ### API 
 
-...文档完善中
-[iantooweek](http://xiangzongliang.com/tool)
-[iantooDate](http://xiangzongliang.com/tool)
+...文档完善中   
+[iantooweek](http://xiangzongliang.com/tool)   
+[iantooDate](http://xiangzongliang.com/tool)   
 
 
 
@@ -86,6 +86,6 @@ V.1.1.0
 
 ### 维护与更新
 
-下一个版本,维护兼容性。
-...
-发布 npm 包
+下一个版本,维护兼容性。   
+...   
+发布 npm 包   
