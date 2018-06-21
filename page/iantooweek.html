@@ -13,7 +13,7 @@
 <script type="text/javascript">
 	iantoo.week({
 		el:'.iantooDateWeek',
-		date:'2018-6-18',
+		date:'2018-6-23',
 		showWeek:true,
 		sign:['2018-06-10','2018-6-18','2018-06-20'],
 		theme:{
@@ -30,7 +30,15 @@
 		},
 		updataRender:function (data) {
 			console.log(data)
+		},
+		touchStartFun:function(){
+			console.log('touchStartFun')
+
+		},
+		touchEndFun:function(){
+			console.log('touchEndFun')
 		}
+
 	})
 </script>
 </body>

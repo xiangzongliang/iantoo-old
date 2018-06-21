@@ -31,6 +31,8 @@ import "../less/iantooweek.less"
 			this.data.config.theme.systemFontColor = opction.theme.systemFontColor || '#555555'
 			this.data.config.updataRender = opction.updataRender || function () {}
 			this.data.config.sign = opction.sign || []
+			this.data.config.touchStartFun = opction.touchStartFun || function(){}
+			this.data.config.touchEndFun = opction.touchEndFun || function(){}
 
 
 			this.render()
@@ -54,6 +56,8 @@ import "../less/iantooweek.less"
 
 				sign:'', //需要被标记的时间,会在a标签中插入span标签
 				updataRender:'', //每次更新渲染之后调用,回调当前显示的星期时间
+				touchStartFun:'',  //当点击日历控件开始的时候出发,即‘touchstart’方法
+				touchEndFun:'', //结束触摸的时候调用,即'touchend'方法 
 			},
 			elastic:0.3, // 弹性值,当滑动距离超过百分比之后后会发生弹性变化
 			calcWeekArr:[], //页面当前显示的三个星期的数组,会随着滚动而变动
@@ -151,19 +155,27 @@ import "../less/iantooweek.less"
 				year = getDate.year,
 				month = getDate.month, //获取当前的月份
 				day = getDate.day, //获取当天是几号
+				week = getDate.week, //获取当天是星期几
 				allDay = this.data.arrMonth(year), //当年的月份列表
 				monthDay = allDay[month-1] //获取当月有多少天
+
+
+
+
+
 
 
 				//第一次打开将时间显示在最中间
 				var firstDay = '', //当前显示的第一天
 					lastDay = '', //当前显示的最后一天
-					weekArrShow = [] //当前显示的星期的数组
+					weekArrShow = []; //当前显示的星期的数组
+
+
 
 
 
 				//当天之前的时间
-				for(var di=0;di<=3;di++) {
+				for(var di=0;di<=week;di++) {
 					var today = day - di
 					if(today > 0){ //正常添加
 						weekArrShow.unshift({
@@ -195,8 +207,9 @@ import "../less/iantooweek.less"
 
 
 				var newMonth = 1
+
 				//当天之后的时间
-				for(var ai=1;ai<=3;ai++){
+				for(var ai=1;ai<(7-week);ai++){
 					var today = day + ai
 					if(today <= monthDay){ //正常添加
 						weekArrShow.push({
@@ -398,8 +411,10 @@ import "../less/iantooweek.less"
 				weekBox = this.elem('div',{class:'weekBox'}),
 				recordingTime = this.data.recordingTime, //当前需要选中的时间
 				systemDate = this.data.systemDate //当前的系统时间
+
 			for(var wib in arr){
 				var dayBox = this.elem('a')
+
 
 
 				//判断是否为系统时间
@@ -484,7 +499,7 @@ import "../less/iantooweek.less"
 		//渲染结束之后
 		renderEnd:function (dom) {
 			var weekBox = dom.C_box.querySelectorAll('.weekBox'),
-				offsetWidth = weekBox[1].offsetWidth
+				offsetWidth = window.screen.availWidth || weekBox[1].offsetWidth
 
 			//渲染结束设置位置
 			weekBox[0].style.transform = "translateX(-"+offsetWidth+"px)"
@@ -575,6 +590,10 @@ import "../less/iantooweek.less"
 			that.data.touch.translateY = translateY
 			that.data.touch.clientX = clientX
 			that.data.touch.clientY = clientY
+
+
+			//回调页面的方法
+			that.data.config.touchStartFun(e)
 		},
 		touchmoveFun:function (e,dom,that) {
 			var clientY = e.changedTouches[0].clientY,
@@ -614,6 +633,7 @@ import "../less/iantooweek.less"
 					month_box[0].style.transform = "translateX(0px)"
 					month_box[1].style.transform = "translateX("+W+"px)"
 					month_box[2].outerHTML = ''
+					month_box[2].innerHTML = ''
 
 
 				}else{//向左滑动
@@ -621,6 +641,7 @@ import "../less/iantooweek.less"
 					month_box[1].style.transform = "translateX(-"+W+"px)"
 					month_box[2].style.transform = "translateX(0px)"
 					month_box[0].outerHTML = ''
+					month_box[0].innerHTML = ''
 
 				}
 			}else{ //没有达到弹性值//回弹
@@ -654,6 +675,9 @@ import "../less/iantooweek.less"
 			if(isRender === true){
 				that.updataRender(that,LorR,dom) //将新的一周渲染到页面上
 			}
+
+			//回调页面的方法	
+			that.data.config.touchEndFun(e)
 		},
 
 
@@ -664,12 +688,11 @@ import "../less/iantooweek.less"
 			var clickDom = this.data.clickDom
 
 
-
-
 			//删除之前DOM的class
 			clickDom.removeAttribute('style')
 			var befClass = clickDom.getAttribute('class'),
 				classLength = befClass.split(' ')
+
 			if(classLength.length > 1){
 				clickDom.class = 'systemDate'
 				clickDom.style.background = this.data.config.theme.systemBG
@@ -692,7 +715,7 @@ import "../less/iantooweek.less"
 
 
 
-
+			
 
 
 			var dayText = parseInt(that.innerText),
@@ -700,16 +723,20 @@ import "../less/iantooweek.less"
 
 			for(var ci in currentShowWeek){
 				if(currentShowWeek[ci].day == dayText){
-					this.data.config.clickDay({
+
+					//修改当前选择的时间
+					var callBackDate = {
 						year:currentShowWeek[ci].year,
 						month:currentShowWeek[ci].month,
 						day:dayText
-					})
+					}
+
+					this.data.recordingTime = callBackDate
+
+					//回调方法
+					this.data.config.clickDay(callBackDate)
 				}
 			}
-
-
-
 		},
 
 
