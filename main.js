@@ -122,7 +122,7 @@ if(process.env.NODE_ENV == 'development'){
 		contentBase: path.join(__dirname, "./"), //非webpack编译的文件来源
 		port: 9000,
 		// host:'localhost',
-		// index:'index.html',
+		index:'index.html',
 
 
 		headers: {  //设置请求头
@@ -136,11 +136,11 @@ if(process.env.NODE_ENV == 'development'){
 		// */
 
 
-		// historyApiFallback: { //所有404页面转向
-		// 	rewrites: [
-		// 		{ from: /^\/$/, to: '/404.html' }
-		// 	]
-		// },
+		historyApiFallback: { //所有404页面转向
+			rewrites: [
+				{ from: /^\/$/, to: '/404.html' }
+			]
+		},
 		open:true, //打开页面
 		openPage:'iantoo.html',
 

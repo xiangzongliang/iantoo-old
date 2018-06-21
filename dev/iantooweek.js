@@ -9,11 +9,15 @@
 import "../less/common.less"
 import "../less/iantooweek.less"
 
+import dayjs from 'dayjs'
+dayjs.locale('zh-cn')
+
+
+
 
 ;(function (win,undefined) {
 
 	var iantoo = win.iantoo || {};
-
 
 	const W = {
 
@@ -244,7 +248,6 @@ import "../less/iantooweek.less"
 				this.data.currentShowWeek = weekArrShow
 
 				return weekArrShow
-
 		},
 
 
@@ -289,9 +292,7 @@ import "../less/iantooweek.less"
 
 
 
-			return beforeWeekArr
-
-			
+			return beforeWeekArr	
 		},
 
 
@@ -339,8 +340,6 @@ import "../less/iantooweek.less"
 
 
 			return afterWeekArr
-
-
 		},
 
 
@@ -610,7 +609,6 @@ import "../less/iantooweek.less"
 			month_box[0].style.transform = "translateX("+(coordinateX-W)+"px)"
 			month_box[1].style.transform = "translateX("+coordinateX+"px)"
 			month_box[2].style.transform = "translateX("+(coordinateX+W)+"px)"
-
 		},
 		touchendFun:function (e,dom,that) {
 			var clientY = e.changedTouches[0].clientY,
@@ -756,61 +754,49 @@ import "../less/iantooweek.less"
 
 		//获取指定格式的时间
 		fmtDate:function(DateStr){
-			var date;
-
+			var getdate;
 			if(DateStr){
-				try{
-					var splitDate = DateStr.split(/\D/),  //得到的格式[2018,11,11,22,33,44]
-						m_y = parseInt(splitDate[0]),
-						m_m = parseInt(splitDate[1])-1,   //月份的参数是0-11，所以要减去1
-						m_d = parseInt(splitDate[2]),
-
-
-						m_h = isNaN(parseInt(splitDate[3])) ? 0 : parseInt(splitDate[3]),
-						m_month = isNaN(parseInt(splitDate[4])) ? 0 : parseInt(splitDate[4]),
-						m_s = isNaN(parseInt(splitDate[5])) ? 0 : parseInt(splitDate[5]),
-						date = new Date(m_y,m_m,m_d,m_h,m_month,m_s)
-				}catch (err){
-					console.info(err)
-					date = new Date()
-				}
+				getdate = dayjs(DateStr)
 			}else{
-				date = new Date();
+				getdate = dayjs()
 			}
-
-
-
-			var y = date.getFullYear();
-			var m = date.getMonth()+1; //在返回月份的时候要正常的加一
-			var d = date.getDate();
-			var h = date.getHours();
-			var minute = date.getMinutes();
-			var second = date.getSeconds();
-			var week = date.getDay()
-
 			return {
-				year:y,
-				month:m,
-				day:d,
-				h:h,
-				m:minute,
-				s:second,
-				week:week
+				year:getdate.$y,
+				month:getdate.$M + 1,
+				day:getdate.$D,
+				h:getdate.$H,
+				m:getdate.$m,
+				s:getdate.$s,
+				week:getdate.$W
 			}
 		},
 
 
 	}
 
+	//继承方法
+	const E = {
+
+		//异步更新日历控件
+		updateRender:function(opction){
+			//重新赋值
+			W.data.config.sign = opction.sign ? opction.sign : W.data.config.sign
+			W.data.config.date = opction.date ? opction.date : W.data.config.date
+			W.render()
+		},
+		//暴露给外层的时间转换方式
+		fmtDate:function(date){
+			return W.fmtDate(date)
+		}
+
+	}
+
+
 	//------------------------------------------------//
 	iantoo.week = function(opction){
 		return new W.init(opction)
 	}
+	iantoo.week.__proto__ = E
 	W.init.prototype = W
 	win.iantoo = iantoo
-
 })(window)
-
-
-
-
