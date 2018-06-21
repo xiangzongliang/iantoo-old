@@ -28,8 +28,12 @@
 		render:function (data,systemDate) {
 			console.log('首次渲染完成',data,systemDate)
 		},
+		scroll:function(data){
+			console.log('页面被更新了！并产生了数据更新')
+		},
 		updataRender:function (data) {
-			console.log(data)
+			console.log('更新渲染了页面',data)
+			//只有在调用了iantoo.week.update()的时候才会被处罚
 		},
 		touchStartFun:function(){
 			console.log('touchStartFun')
@@ -42,12 +46,14 @@
 	})
 
 
+	setTimeout(function(){
+		iantoo.week.update({
+			date:'2018-6-23',
+			sign:['2018-06-15','2018-06-21','2018-06-23']
+		})
+	},3000)
 
-
-	iantoo.week.updateRender({
-		date:'2018-6-23',
-		sign:['2018-06-15','2018-6-20','2018-06-23']
-	})
+	
 </script>
 </body>
 </html>

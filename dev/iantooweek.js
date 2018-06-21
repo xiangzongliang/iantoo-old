@@ -9,18 +9,24 @@
 import "../less/common.less"
 import "../less/iantooweek.less"
 
+
 import dayjs from 'dayjs'
+import elem from './lib/elem'
+
+
 dayjs.locale('zh-cn')
+
 
 
 
 
 ;(function (win,undefined) {
 
-	var iantoo = win.iantoo || {};
+
+	let iantoo = win.iantoo || {},
+		_dom;
 
 	const W = {
-
 		//初始化
 		init:function(opction) {
 			var opction = opction || {}
@@ -37,6 +43,7 @@ dayjs.locale('zh-cn')
 			this.data.config.sign = opction.sign || []
 			this.data.config.touchStartFun = opction.touchStartFun || function(){}
 			this.data.config.touchEndFun = opction.touchEndFun || function(){}
+			this.data.config.scroll = opction.scroll || function(){}
 
 
 			this.render()
@@ -60,6 +67,7 @@ dayjs.locale('zh-cn')
 
 				sign:'', //需要被标记的时间,会在a标签中插入span标签
 				updataRender:'', //每次更新渲染之后调用,回调当前显示的星期时间
+				scroll:'', //每次滚动星期之后触发
 				touchStartFun:'',  //当点击日历控件开始的时候出发,即‘touchstart’方法
 				touchEndFun:'', //结束触摸的时候调用,即'touchend'方法 
 			},
@@ -100,11 +108,10 @@ dayjs.locale('zh-cn')
 
 		//创建页面的DOM
 		creatDOM:function() {
-			var T = this
 			return {
-				iantooWeek:T.elem('div',{class:'iantooWeek'}), //整体的日历控件
-				weekBar:T.elem('div',{class:'weekBar'}), //星期栏
-				C_box:T.elem('div',{class:'calendarBox'}) //日历的外框
+				iantooWeek:elem('div',{class:'iantooWeek'}), //整体的日历控件
+				weekBar:elem('div',{class:'weekBar'}), //星期栏
+				C_box:elem('div',{class:'calendarBox'}) //日历的外框
 			}
 		},
 
@@ -117,7 +124,7 @@ dayjs.locale('zh-cn')
 		setWeek:function(dom) {
 			var week = this.data.week
 			for(var wi in week){
-				var weekA = this.elem('a')
+				var weekA = elem('a')
 				weekA.innerText = week[wi]
 				dom.weekBar.appendChild(weekA)
 			}
@@ -356,7 +363,7 @@ dayjs.locale('zh-cn')
 
 
 
-
+			_dom = dom;
 			//设置系统是时间
 			this.data.systemDate = this.fmtDate()
 			//设置当前点击的时间
@@ -380,7 +387,7 @@ dayjs.locale('zh-cn')
 
 
 			//渲染日历栏
-			this.setCalendar(dom)  //---书记环节较多
+			this.setCalendar(dom)  //---此处环节较多
 
 
 
@@ -398,7 +405,6 @@ dayjs.locale('zh-cn')
 
 
 			this.renderEnd(dom)
-
 		},
 
 
@@ -407,12 +413,12 @@ dayjs.locale('zh-cn')
 		//渲染星期的DOM
 		renderWeek:function (arr,dom,type) {
 			var that = this,
-				weekBox = this.elem('div',{class:'weekBox'}),
+				weekBox = elem('div',{class:'weekBox'}),
 				recordingTime = this.data.recordingTime, //当前需要选中的时间
 				systemDate = this.data.systemDate //当前的系统时间
 
-			for(var wib in arr){
-				var dayBox = this.elem('a')
+			for(let wib in arr){
+				let dayBox = elem('a')
 
 
 
@@ -473,7 +479,6 @@ dayjs.locale('zh-cn')
 				dom.C_box.appendChild(weekBox)
 			}
 			return weekBox
-
 		},
 
 
@@ -485,7 +490,7 @@ dayjs.locale('zh-cn')
 			for(var si in sign){
 				var newSignDay = this.fmtDate(sign[si])
 				if(opction.year == newSignDay.year && opction.month == newSignDay.month && opction.day == newSignDay.day){
-					var signDom = this.elem('span')
+					var signDom = elem('span')
 					aDOM.appendChild(signDom)
 				}
 			}
@@ -576,7 +581,7 @@ dayjs.locale('zh-cn')
 		touchstartFun:function (e,dom,that) {
 			var clientY = e.changedTouches[0].clientY,
 				clientX = e.changedTouches[0].clientX,
-				month_box = dom.C_box.querySelectorAll('.weekBox'),
+				month_box = _dom.C_box.querySelectorAll('.weekBox'),
 				translate = window.getComputedStyle(month_box[1], null).getPropertyValue("transform");
 				translate = translate.substring(0,translate.length-1)
 				translate = translate.split(',')
@@ -738,23 +743,8 @@ dayjs.locale('zh-cn')
 		},
 
 
-
-
-		//创建DOM
-		elem:function(element,type) {
-			var DOM = document.createElement(element);
-			if(type){
-				for(var key in type){
-					DOM.setAttribute(key,type[key])
-				}
-			}
-			return DOM
-		},
-
-
-		//获取指定格式的时间
-		fmtDate:function(DateStr){
-			var getdate;
+		fmtDate:function(DateStr) {
+			let getdate;
 			if(DateStr){
 				getdate = dayjs(DateStr)
 			}else{
@@ -769,20 +759,22 @@ dayjs.locale('zh-cn')
 				s:getdate.$s,
 				week:getdate.$W
 			}
-		},
-
-
+		}
 	}
 
 	//继承方法
 	const E = {
 
 		//异步更新日历控件
-		updateRender:function(opction){
+		update:function(opction){
 			//重新赋值
 			W.data.config.sign = opction.sign ? opction.sign : W.data.config.sign
 			W.data.config.date = opction.date ? opction.date : W.data.config.date
-			W.render()
+
+			//清空之前的日历内容
+			_dom.C_box.innerHTML = ''
+			W.setCalendar(_dom)
+			W.renderEnd(_dom)
 		},
 		//暴露给外层的时间转换方式
 		fmtDate:function(date){
