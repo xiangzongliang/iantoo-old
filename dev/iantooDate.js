@@ -1,5 +1,3 @@
-import "../less/iantooDate.less"
-
 /*
 	name : iantooDate
 	version : 2.0.1
@@ -9,9 +7,21 @@ import "../less/iantooDate.less"
 	doc : http://xiangzongliang.com/tool
  */
 
+import "../less/common.less"
+import "../less/iantooDate.less"
+
+
+import dayjs from 'dayjs'
+import elem from './lib/elem'
+
+
+dayjs.locale('zh-cn')
+
+
 ;(function (w,undefined) {
 
-    var iantoo = w.iantoo || {};
+    var iantoo = w.iantoo || {},
+        _dom;
 
 
     const D = {
@@ -112,7 +122,6 @@ import "../less/iantooDate.less"
             pageMonthArr:[], //页面一共会渲染三个月的内容，对应的数组。
             selectDom:'', //当前选中的日历对象，避免下次点击的时候去遍历DOM，直接清除样式即可
 	        constTody:{}, //初始化的系统的今天的时间，初始一次，之后不会发生变化
-
         },
 
 
@@ -120,15 +129,14 @@ import "../less/iantooDate.less"
 
         //创建页面的DOM
         creatDOM:function() {
-            var T = this
             return {
-                pop_date_box:T.elem('div',{class:'iantooDate'}),
-                mask:T.elem('div',{class:'iantooMask'}),
-                date_head:T.elem('div',{class:'date_head'}),
-                date_title:T.elem('div',{class:'date_title'}),
-                date_week:T.elem('div',{class:'date_week'}),
-                date_content:T.elem('div',{class:'date_content'}),
-	            date_footer:T.elem('div',{class:'date_footer'}),
+                pop_date_box:elem('div',{class:'iantooDate'}),
+                mask:elem('div',{class:'iantooMask'}),
+                date_head:elem('div',{class:'date_head'}),
+                date_title:elem('div',{class:'date_title'}),
+                date_week:elem('div',{class:'date_week'}),
+                date_content:elem('div',{class:'date_content'}),
+	            date_footer:elem('div',{class:'date_footer'}),
             }
         },
 
@@ -146,10 +154,10 @@ import "../less/iantooDate.less"
 
 
             if(lang == 'cn'){
-                headerText = currentDate.y+'年'+currentDate.month + '月'
+                headerText = currentDate.Y+'年'+currentDate.M + '月'
             }else{
-                var getMonth = parseInt(currentDate.month)
-                headerText = month[getMonth - 1] + ' ' + currentDate.y
+                var getMonth = parseInt(currentDate.M)
+                headerText = month[getMonth - 1] + ' ' + currentDate.Y
             }
             dom.date_head.innerText = headerText
             dom.date_head.style.color = theme
@@ -164,7 +172,7 @@ import "../less/iantooDate.less"
                 week = la.week
 
             for(var wi in week){
-                var weekNode = this.elem('a')
+                var weekNode = elem('a')
                 weekNode.innerText = week[wi]
                 dom.date_week.appendChild(weekNode)
             }
@@ -200,7 +208,6 @@ import "../less/iantooDate.less"
 			    	that.close(dom)
 			    })
 		    }
-
 	    },
 
 
@@ -211,32 +218,19 @@ import "../less/iantooDate.less"
                 dom = this.creatDOM(),
                 dateNode = this.fmtDate(config.date),
 	            constTody = this.fmtDate(),
-	            styleSheets = document.styleSheets[0]
+	            styleSheets = document.styleSheets[0];
 
+
+
+                _dom = dom
 
 
             //初始化两个时间,注：⚠这里必须去等于一个新的对象，否则在对象深度复制的时候会出现问题️
-            this.data.today = {
-                y:dateNode.y,
-                m:dateNode.month,
-                d:dateNode.d
-            };
+            this.data.today = dateNode;
             this.data.currentDate = dateNode
 
             //初始化系统的时间，为显示今天标为灰色准备,改时间设置之后不会改变
-	        this.data.constTody = {
-		        y:constTody.y,
-		        m:constTody.month,
-		        d:constTody.d
-            }
-
-
-
-
-
-
-
-
+	        this.data.constTody = constTody
 
 
             //计算页面要渲染的三个月的日历
@@ -263,9 +257,6 @@ import "../less/iantooDate.less"
 	        if(this.data.config.header == true){
 		        dom.pop_date_box.appendChild(dom.date_head)
 	        }
-
-
-
 	        //---条件渲染星期
 	        if(this.data.config.week == true){
 		        dom.pop_date_box.appendChild(dom.date_week)
@@ -332,8 +323,6 @@ import "../less/iantooDate.less"
                 box_height_one = month_box[0].offsetHeight, //第一个月份需要往上推自身的高度
                 box_height = month_box[1].offsetHeight,
                 box_width = month_box[1].offsetWidth
-
-
             this.data.slider.H = box_height
             this.data.slider.W = box_width
 
@@ -361,12 +350,11 @@ import "../less/iantooDate.less"
         calcPageDate:function() {
             var currentDate = this.data.currentDate,  //当前显示的是那个月
                 pageMonthArr = this.data.pageMonthArr, //显示的三个月份的数组
-                year = currentDate.y,
-                month = currentDate.month
+                year = currentDate.Y,
+                month = currentDate.M
 
 
             //arr[0]
-
             if((month - 1)<=0){
                 pageMonthArr[0] = {
                     year:year-1,
@@ -397,9 +385,7 @@ import "../less/iantooDate.less"
                     year:year,
                     month:month+1
                 }
-
             }
-
         },
 
 
@@ -412,6 +398,7 @@ import "../less/iantooDate.less"
             var pageMonthArr = this.data.pageMonthArr,
                 that = this
 
+
             for(var pi in pageMonthArr){
                 var monthBox = that.renderMonth(dom,{
                     year:pageMonthArr[pi].year,
@@ -420,7 +407,6 @@ import "../less/iantooDate.less"
 
                 dom.date_content.appendChild(monthBox)
             }
-
         },
 
 
@@ -431,8 +417,8 @@ import "../less/iantooDate.less"
         updataRender:function(type,dom) {
             var that = this,
                 currentDate = this.data.currentDate,
-                year = currentDate.y,
-                month = currentDate.month,
+                year = currentDate.Y,
+                month = currentDate.M,
                 newYear,newMonth
 
 
@@ -513,10 +499,6 @@ import "../less/iantooDate.less"
                     m:newMonth
                 }
             })
-
-
-
-
         },
 
 
@@ -528,24 +510,24 @@ import "../less/iantooDate.less"
         renderMonth:function(dom,opction) {
             var that = this,
                 move = this.data.config.move,
-                monthBox = this.elem('div',{class:'month_box'}),
+                monthBox = elem('div',{class:'month_box'}),
                 year = opction.year,
                 month = opction.month,
                 totalDay = this.fmtDate(year + '-' + month + '-1 08:00:01'), //获取当月一号对应的相关信息
-                date_one_week = totalDay.week,  //得到当月的一号是星期几
+                date_one_week = totalDay.w,  //得到当月的一号是星期几
                 arrMonth = this.data.arrMonth(year),
                 month_day = arrMonth[month-1], //得到当月有多少天
                 //row = (month_day == 28 && date_one_week==0) ? 5 : 6 //显示多少行，其实有456行三种情况
                 row = 6, //为防止页面上下跳动，统一渲染6行,
                 today = that.data.today,
-                system_year = today.y, //系统当前的年
-                system_month = today.m, //系统当前的月
-                system_day = today.d, //系统当前的天
+                system_year = today.Y, //系统当前的年
+                system_month = today.M, //系统当前的月
+                system_day = today.D, //系统当前的天
                 isY_M = false,
 	            constTody = this.data.constTody,   //系统对应今天的时间
-                const_system_year = constTody.y,
-                const_system_month = constTody.m,
-                const_system_day = constTody.d
+                const_system_year = constTody.Y,
+                const_system_month = constTody.M,
+                const_system_day = constTody.D
 
 
 
@@ -561,9 +543,9 @@ import "../less/iantooDate.less"
 
 
             for(var ri = 0;ri<row;ri++){
-                var p = that.elem('p')
+                var p = elem('p')
                 for(var di = 0;di<7;di++){
-                    var a = that.elem('a'),
+                    var a = elem('a'),
                         nodeA = (ri*7)+di+1,
                         showDay = nodeA - date_one_week  //显示的日期--天
 
@@ -598,7 +580,7 @@ import "../less/iantooDate.less"
 
 
 		                a.onclick = function (e) {
-			                that.clickDay(e,dom,this)
+			                that.clickDay(e,this)
 		                };//对所有的天绑定点击事件
 
 
@@ -660,10 +642,6 @@ import "../less/iantooDate.less"
 	                }
                 }
             }
-
-
-
-
         },
 
 
@@ -676,41 +654,35 @@ import "../less/iantooDate.less"
 	            dom.mask.onclick = function (ev) {
 					that.close(dom)
 	            }
-
             }
-
         },
 
 
 
 	    //关闭日历页面
-	    close:function (dom) {
+	    close:function () {
         	try{ //在部分情况下会因为没有父节点报错
-		        dom.pop_date_box.outerHTML = ''
-		        dom.mask.outerHTML = ''
+		        _dom.pop_date_box.outerHTML = ''
+		        _dom.mask.outerHTML = ''
 	        }catch (e){
 		        document.querySelector(D.data.config.el).innerHTML = ''
 	        }finally {
 		        //关闭了页面回调
 		        this.data.config.close()
 	        }
-
-
-
 	    },
 
 
 
-
-
-        //
         touchstartFun:function(e,dom,that) {
             var clientY = e.changedTouches[0].clientY,
 	            clientX = e.changedTouches[0].clientX,
-                month_box = dom.date_content.getElementsByClassName('month_box')
+                month_box = dom.date_content.getElementsByClassName('month_box'),
                 translate = window.getComputedStyle(month_box[1], null).getPropertyValue("transform");
+
                 translate = translate.substring(0,translate.length-1)
                 translate = translate.split(',')
+
 
                 var translateY = parseInt(translate[5]), //一直在获取translateY属性的值
                     translateX = parseInt(translate[4])
@@ -746,8 +718,6 @@ import "../less/iantooDate.less"
 	            month_box[1].style.transform = "translateY("+coordinateY+"px)"
 	            month_box[2].style.transform = "translateY("+(coordinateY+H)+"px)"
             }
-
-
         },
         touchendFun:function(e,dom,that) {
             var clientY = e.changedTouches[0].clientY, //当前的Y坐标
@@ -774,15 +744,15 @@ import "../less/iantooDate.less"
 				        springback = false
 				        month_box[1].style.transform = "translateX(-"+W+"px)"
 				        month_box[2].style.transform = "translateX(0px)"
-				        month_box[0].outerHTML = ''
-				        month_box[0] = null
+                        month_box[0].innerHTML = ''
+				        month_box[0].outerHTML = '' 
 			        }else{//向右滑动
 				        sliderStatus = 'right'
 				        springback = false
 				        month_box[0].style.transform = "translateX(0px)"
 				        month_box[1].style.transform = "translateX("+W+"px)"
+                        month_box[2].innerHTML = ''
 				        month_box[2].outerHTML = ''
-				        month_box[2] = null //释放DOM
 			        }
 
 		        }else{//没有超过弹性值,回弹回去
@@ -790,8 +760,6 @@ import "../less/iantooDate.less"
 			        month_box[0].style.transform = "translateX(-"+W+"px)"
 			        month_box[1].style.transform = "translateX(0px)"
 			        month_box[2].style.transform = "translateX("+W+"px)"
-
-
 		        }
 
 
@@ -802,16 +770,15 @@ import "../less/iantooDate.less"
 				        springback = false
 				        month_box[0].style.transform = "translateY(0px)"
 				        month_box[1].style.transform = "translateY("+H+"px)"
+                        month_box[2].innerHTML = ''
 				        month_box[2].outerHTML = ''
-				        month_box[2] = null //释放DOM
-
 			        }else{//向上滑动
 				        sliderStatus = 'up'
 				        springback = false
 				        month_box[1].style.transform = "translateY(-"+H+"px)"
 				        month_box[2].style.transform = "translateY(0px)"
-				        month_box[0].outerHTML = ''
-				        month_box[0] = null
+                        month_box[0].innerHTML = ''
+				        month_box[0].outerHTML = ''  
 			        }
 
 		        }else{//没有超过弹性值
@@ -820,7 +787,6 @@ import "../less/iantooDate.less"
 			        month_box[0].style.transform = "translateY(-"+H+"px)"
 			        month_box[1].style.transform = "translateY(0px)"
 			        month_box[2].style.transform = "translateY("+H+"px)"
-
 		        }
 	        }
 
@@ -852,13 +818,12 @@ import "../less/iantooDate.less"
 		        //重新渲染页面的月份内容
 		        that.updataRender(sliderStatus,dom)
 	        }
-
         },
 
 
 
         //点击了某一天的日期
-        clickDay:function(e,dom,clickDom) {
+        clickDay:function(e,clickDom) {
             var that = this,
 	            currentDate = this.data.currentDate,
 	            constTody = this.data.constTody,
@@ -900,77 +865,58 @@ import "../less/iantooDate.less"
 			
             //回传到API中
             this.data.config.clickDay(callbackData,function () {
-	            that.close(dom)
+	            that.close()
             })
 
         },
 
 
-        //创建DOM
-        elem:function(element,type) {
-            var DOM = document.createElement(element);
-            if(type){
-                for(var key in type){
-                    DOM.setAttribute(key,type[key])
-                }
-            }
-            return DOM
-        },
-
-
         //获取指定格式的时间
-        /*
-        常规接受参数
-         */
         fmtDate:function(DateStr){
-            var date;
-
+            var getdate;
             if(DateStr){
-	            try{
-		            var splitDate = DateStr.split(/\D/),  //得到的格式[2018,11,11,22,33,44]
-			            m_y = parseInt(splitDate[0]),
-			            m_m = parseInt(splitDate[1])-1,   //月份的参数是0-11，所以要减去1
-			            m_d = parseInt(splitDate[2]),
-			            m_h = parseInt(splitDate[3]),
-			            m_month = parseInt(splitDate[4]),
-			            m_s = parseInt(splitDate[5])
-		                date = new Date(m_y,m_m,m_d,m_h,m_month,m_s)
-	            }catch (err){
-		            console.info(err)
-		            date = new Date()
-	            }
+                getdate = dayjs(DateStr)
             }else{
-                date = new Date();
+                getdate = dayjs()
             }
-
-
-
-            var y = date.getFullYear();
-	        var m = date.getMonth()+1; //在返回月份的时候要正常的加一
-            var d = date.getDate();
-            var h = date.getHours();
-            var minute = date.getMinutes();
-            var second = date.getSeconds();
-            var week = date.getDay()
+            return {
+                Y:getdate.$y,
+                M:getdate.$M + 1,
+                D:getdate.$D,
+                h:getdate.$H,
+                m:getdate.$m,
+                s:getdate.$s,
+                w:getdate.$W
+            }
 
             return {
-                y:y,
-                month:m,
-                d:d,
-                h:h,
-                m:minute,
-                s:second,
-                week:week
+                y:getdate.$y,
+                month:getdate.$M + 1,
+                d:getdate.$D,
+                h:getdate.$H,
+                m:getdate.$m,
+                s:getdate.$s,
+                week:getdate.$W
             }
         },
-
-
     }
+
+
+
+    const E = {
+        update(opction){
+        },
+        close(){
+            D.close()
+        }
+    }
+
 
     //------------------------------------------------//
     iantoo.date = function(opction){
         return new D.init(opction)
     }
+    iantoo.date.__proto__ = E
     D.init.prototype = D
     w.iantoo = iantoo
 

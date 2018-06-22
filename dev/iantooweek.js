@@ -122,9 +122,9 @@ dayjs.locale('zh-cn')
 
 		//设置星期栏
 		setWeek:function(dom) {
-			var week = this.data.week
-			for(var wi in week){
-				var weekA = elem('a')
+			let week = this.data.week
+			for(let wi in week){
+				let weekA = elem('a')
 				weekA.innerText = week[wi]
 				dom.weekBar.appendChild(weekA)
 			}
@@ -136,7 +136,7 @@ dayjs.locale('zh-cn')
 
 		//渲染日历
 		setCalendar:function (dom) {
-			var that = this,
+			let that = this,
 				calcWeek = this.calcWeek(),     //当前显示的星期
 				beforeWeek = this.beforeWeek(), //前一个星期
 				afterWeek = this.afterWeek()    //后一个星期
@@ -149,7 +149,7 @@ dayjs.locale('zh-cn')
 
 			// 得到三个星期的DOM,并插入在页面中
 			var calcWeekArr = this.data.calcWeekArr
-			for(var cai in calcWeekArr){
+			for(let cai in calcWeekArr){
 				that.renderWeek(calcWeekArr[cai],dom)
 			}
 		},
@@ -186,7 +186,7 @@ dayjs.locale('zh-cn')
 
 
 				//当天之前的时间
-				for(var di=0;di<=week;di++) {
+				for(let di=0;di<=week;di++) {
 					var today = day - di
 					if(today > 0){ //正常添加
 						weekArrShow.unshift({
@@ -220,7 +220,7 @@ dayjs.locale('zh-cn')
 				var newMonth = 1
 
 				//当天之后的时间
-				for(var ai=1;ai<(7-week);ai++){
+				for(let ai=1;ai<(7-week);ai++){
 					var today = day + ai
 					if(today <= monthDay){ //正常添加
 						weekArrShow.push({
@@ -267,7 +267,7 @@ dayjs.locale('zh-cn')
 				beforeWeekArr = []
 
 
-			for(var bi=1;bi<=7;bi++){
+			for(let bi=1;bi<=7;bi++){
 				var B_day = day - bi
 				if(B_day<=0){ //如果时间小于了一号则要往前推一个月
 					if(month == 1){ //如果是一月则需要往前推一年,月份一定为12月
@@ -314,7 +314,7 @@ dayjs.locale('zh-cn')
 				afterWeekArr = []
 
 
-			for(var ai=1;ai<=7;ai++){
+			for(let ai=1;ai<=7;ai++){
 				var A_day = day + ai
 
 				if(A_day > monthAllDay){ //如果超过了时间则要推向下一个月
@@ -405,6 +405,11 @@ dayjs.locale('zh-cn')
 
 
 			this.renderEnd(dom)
+
+
+
+			//首次渲染结束调用
+			this.data.config.render(this.data.currentShowWeek,this.data.systemDate)
 		},
 
 
@@ -418,25 +423,29 @@ dayjs.locale('zh-cn')
 				systemDate = this.data.systemDate //当前的系统时间
 
 			for(let wib in arr){
-				let dayBox = elem('a')
+				var dayBox = elem('a'),
+					isSystemDate = false; //是否是系统时间
 
 
 
 				//判断是否为系统时间
 				if(arr[wib].year == systemDate.year && arr[wib].month == systemDate.month && arr[wib].day == systemDate.day){
-					dayBox.className = 'today systemDate'
+					dayBox.setAttribute('class','systemDate');
 					dayBox.style.background = this.data.config.theme.systemBG
 					dayBox.style.color = this.data.config.theme.systemFontColor
+					isSystemDate = true
 				}
 
 
 				//当天,着重标注
 				if(arr[wib].year == recordingTime.year && arr[wib].month == recordingTime.month && arr[wib].day == recordingTime.day){
-					dayBox.className = 'today'
+					if(isSystemDate === true){
+						dayBox.setAttribute('class','today systemDate');
+					}else{
+						dayBox.setAttribute('class','today');
+					}
 					dayBox.style.background = this.data.config.theme.selectGB
 					dayBox.style.color = this.data.config.theme.selectFontColor
-
-
 					//记录DOM
 					this.data.clickDom = dayBox
 				}
@@ -516,11 +525,6 @@ dayjs.locale('zh-cn')
 			//记录页面的宽度
 			this.data.slider.W = offsetWidth
 
-
-
-			//首次渲染结束调用
-			this.data.config.render(this.data.currentShowWeek,this.data.systemDate)
-
 		},
 
 
@@ -571,7 +575,7 @@ dayjs.locale('zh-cn')
 
 
 			//每次更新渲染之后回调
-			that.data.config.updataRender(that.data.currentShowWeek)
+			that.data.config.scroll(that.data.currentShowWeek)
 		},
 
 
@@ -635,17 +639,14 @@ dayjs.locale('zh-cn')
 					LorR = 'right'
 					month_box[0].style.transform = "translateX(0px)"
 					month_box[1].style.transform = "translateX("+W+"px)"
-					month_box[2].outerHTML = ''
 					month_box[2].innerHTML = ''
-
-
+					month_box[2].outerHTML = ''
 				}else{//向左滑动
 					LorR = 'left'
 					month_box[1].style.transform = "translateX(-"+W+"px)"
 					month_box[2].style.transform = "translateX(0px)"
-					month_box[0].outerHTML = ''
 					month_box[0].innerHTML = ''
-
+					month_box[0].outerHTML = ''	
 				}
 			}else{ //没有达到弹性值//回弹
 				month_box[0].style.transform = "translateX(-"+W+"px)"
@@ -692,12 +693,15 @@ dayjs.locale('zh-cn')
 
 
 			//删除之前DOM的class
-			clickDom.removeAttribute('style')
+			clickDom.removeAttribute("style")
+
 			var befClass = clickDom.getAttribute('class'),
 				classLength = befClass.split(' ')
 
-			if(classLength.length > 1){
-				clickDom.class = 'systemDate'
+
+			// 移除前一个的样式
+			if(befClass!= null && befClass.indexOf('systemDate')>=0){
+				clickDom.setAttribute('class','systemDate');
 				clickDom.style.background = this.data.config.theme.systemBG
 				clickDom.style.color = this.data.config.theme.systemFontColor
 			}else{
@@ -709,8 +713,10 @@ dayjs.locale('zh-cn')
 			//为新的DOM添加Class
 			this.data.clickDom = that
 			var thatClass = that.getAttribute('class')
-			if(!thatClass){
-				that.className = 'today'
+			if(thatClass!= null && thatClass.indexOf('systemDate')>=0){
+				that.setAttribute('class','today systemDate')
+			}else{
+				that.setAttribute('class','today')
 			}
 			that.style.background = this.data.config.theme.selectGB
 			that.style.color = this.data.config.theme.selectFontColor
@@ -744,7 +750,7 @@ dayjs.locale('zh-cn')
 
 
 		fmtDate:function(DateStr) {
-			let getdate;
+			var getdate;
 			if(DateStr){
 				getdate = dayjs(DateStr)
 			}else{
@@ -762,7 +768,7 @@ dayjs.locale('zh-cn')
 		}
 	}
 
-	//继承方法
+	//继承并暴露的方法
 	const E = {
 
 		//异步更新日历控件
@@ -775,6 +781,7 @@ dayjs.locale('zh-cn')
 			_dom.C_box.innerHTML = ''
 			W.setCalendar(_dom)
 			W.renderEnd(_dom)
+			W.data.config.updataRender()
 		},
 		//暴露给外层的时间转换方式
 		fmtDate:function(date){

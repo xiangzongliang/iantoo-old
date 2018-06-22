@@ -57,7 +57,7 @@ body {
   background: #16aefd;
 }
 .iantooWeek .weekBox .today,
-.iantooWeek .weekBox .today.systemDate {
+.iantooWeek .weekBox .systemDate {
   border-radius: 100px;
 }
 .iantooWeek .weekBox .today span {

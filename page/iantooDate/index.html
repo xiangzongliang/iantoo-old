@@ -51,7 +51,13 @@
 				closePage:true //点击遮罩是否关闭页面
 			},
 			elastic:0.3,
-			theme:['#2A92EB','#D8D8D8','#c4c4c4'],
+			theme:{
+				selectGB:'#2A92EB', //会被当作主题色
+				selectFontColor:'#ffffff',  //当前选择的天的文字颜色
+				systemBG:'rgba(0,0,0,0)', //系统时间的背景色
+				systemFontColor:'#2A92EB', //系统时间文字颜色
+				overdueRemindingColor:'#ececec' //过期提示点的颜色
+			},
 			move:true,
 			sign:["2018-05-25",'2018-05-30','2018-06-10'],
 			clickDay:function (data) {
@@ -60,6 +66,9 @@
 			slide:function (data) {
 				console.log(data)
 				//每次更新并切换了日历完成才会调用
+			},
+			clickFooter:function (systemDate,closeDate) { //点击底部的按钮
+				console.log('dianjidibu')
 			},
 			render:function () {
 				//每次打开日历渲染完成只会调用一次
@@ -71,7 +80,15 @@
 
 			}
 		})
+
+
+
+		// setTimeout(function(){
+		// 	iantoo.date.close()
+
+		// },3000)
 	}
+
 </script>
 </body>
 </html>

@@ -13,27 +13,23 @@
 <script type="text/javascript">
 	iantoo.week({
 		el:'.iantooDateWeek',
-		date:'2018-6-23',
+		//date:'2018-6-23',
 		showWeek:true,
-		sign:['2018-06-10','2018-6-18','2018-06-20'],
+		sign:['2018-06-10','2018-6-18','2018-06-22'],
 		theme:{
 			selectGB:'#16aefd',
 			selectFontColor:'#ffffff',
 			systemBG:'#ffffff',
 			systemFontColor:'#16aefd',
 		},
-		clickDate:function (data) {
-			console.log(data)
-		},
 		render:function (data,systemDate) {
 			console.log('首次渲染完成',data,systemDate)
 		},
+		clickDate:function (data) {
+			console.log(data)
+		},
 		scroll:function(data){
 			console.log('页面被更新了！并产生了数据更新')
-		},
-		updataRender:function (data) {
-			console.log('更新渲染了页面',data)
-			//只有在调用了iantoo.week.update()的时候才会被处罚
 		},
 		touchStartFun:function(){
 			console.log('touchStartFun')
@@ -41,6 +37,10 @@
 		},
 		touchEndFun:function(){
 			console.log('touchEndFun')
+		},
+		updataRender:function () {
+			console.log('更新渲染了页面')
+			//只有在调用了iantoo.week.update()的时候才会被处罚
 		}
 
 	})
@@ -48,8 +48,8 @@
 
 	setTimeout(function(){
 		iantoo.week.update({
-			date:'2018-6-23',
-			sign:['2018-06-15','2018-06-21','2018-06-23']
+			// date:'2018-6-23',
+			sign:['2018-06-15','2018-06-22','2018-06-23']
 		})
 	},3000)
 
