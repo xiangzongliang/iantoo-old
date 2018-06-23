@@ -143,15 +143,13 @@ dayjs.locale('zh-cn')
 
 
         //设置头部
-        setHead:function(dom) {
+        setHead:function() {
             var lang = this.data.config.lang, //语言
                 theme = this.data.config.theme.selectGB, //主题色
                 la = lang=='cn' ? this.data.lang.cn : this.data.lang.en,
                 month = la.month,
                 currentDate = this.data.currentDate,
-                headerText
-
-
+                headerText;
 
             if(lang == 'cn'){
                 headerText = currentDate.Y+'年'+currentDate.M + '月'
@@ -159,14 +157,14 @@ dayjs.locale('zh-cn')
                 var getMonth = parseInt(currentDate.M)
                 headerText = month[getMonth - 1] + ' ' + currentDate.Y
             }
-            dom.date_head.innerText = headerText
-            dom.date_head.style.color = theme
+            _dom.date_head.innerText = headerText
+            _dom.date_head.style.color = theme
         },
 
 
 
         //设置星期栏
-        setWeek:function(dom) {
+        setWeek:function() {
             var lang = this.data.config.lang,
                 la = lang=='cn' ? this.data.lang.cn : this.data.lang.en,
                 week = la.week
@@ -174,38 +172,37 @@ dayjs.locale('zh-cn')
             for(var wi in week){
                 var weekNode = elem('a')
                 weekNode.innerText = week[wi]
-                dom.date_week.appendChild(weekNode)
+                _dom.date_week.appendChild(weekNode)
             }
         },
 
 
 
 	    //设置底部内容
-	    setFooter:function (dom) {
+	    setFooter:function () {
         	var that = this
-        	dom.date_footer.innerText = '查看今天'
-		    dom.date_footer.onclick = function () {
-
+        	_dom.date_footer.innerText = '查看今天'
+		    _dom.date_footer.onclick = function () {
         		// ------- 重新渲染当天需要执行的方法
         		that.data.config.date = '' //时间初始化为空
 			    var dateNode = that.fmtDate() //得到今天的时间
 			    that.data.today = {
-				    y:dateNode.y,
-				    m:dateNode.month,
-				    d:dateNode.d
+				    y:dateNode.Y,
+				    m:dateNode.M,
+				    d:dateNode.D
 			    };
 			    that.data.currentDate = dateNode
 			    //计算页面要渲染的三个月的日历
-			    that.calcPageDate()
-			    that.setHead(dom)
+			    that.calcPageDate(2)
+			    that.setHead()
 			    //计算并显示页面中的月份详情
-			    that.calcMonth(dom)
+			    that.calcMonth(_dom)
 			    //渲染结束调用方法
-			    that.renderEnd(dom)
+			    that.renderEnd(_dom)
 
 			    //回调点击当前底部的按钮
 			    that.data.config.clickFooter(that.data.constTody,function(){
-			    	that.close(dom)
+			    	that.close()
 			    })
 		    }
 	    },
@@ -234,7 +231,7 @@ dayjs.locale('zh-cn')
 
 
             //计算页面要渲染的三个月的日历
-            this.calcPageDate()
+            this.calcPageDate(1)
 
 
 
@@ -248,9 +245,9 @@ dayjs.locale('zh-cn')
 
 
 
-	        this.setHead(dom)
-	        this.setWeek(dom)
-	        this.setFooter(dom)
+	        this.setHead()
+	        this.setWeek()
+	        this.setFooter()
 
             //渲染
 	        //---条件渲染头部
@@ -303,12 +300,8 @@ dayjs.locale('zh-cn')
 
             //渲染结束调用方法
             this.renderEnd(dom)
-
-
             //添加事件监听
             this.event(dom)
-
-
             //首次渲染完成之后回调
             this.data.config.render(this.data.constTody) //回调系统当前时间
         },
@@ -347,7 +340,8 @@ dayjs.locale('zh-cn')
 
 
         //计算页面显示的三个月的日历数组
-        calcPageDate:function() {
+        calcPageDate:function(o) {
+            console.log(o)
             var currentDate = this.data.currentDate,  //当前显示的是那个月
                 pageMonthArr = this.data.pageMonthArr, //显示的三个月份的数组
                 year = currentDate.Y,
@@ -473,15 +467,15 @@ dayjs.locale('zh-cn')
 
 
             //设置当前显示的年月
-            currentDate.y = newYear
-            currentDate.month = newMonth
+            currentDate.Y = newYear
+            currentDate.M = newMonth
 
 
 
 
             //重新渲染头部模块
 	        if(this.data.config.header === true){
-		        this.setHead(dom)
+		        this.setHead()
 	        }
 
 

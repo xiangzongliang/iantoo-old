@@ -11,7 +11,7 @@ import "../less/iantooweek.less"
 
 
 import dayjs from 'dayjs'
-import elem from './lib/elem'
+import elem from './lib/elem.js'
 
 
 dayjs.locale('zh-cn')
@@ -23,7 +23,7 @@ dayjs.locale('zh-cn')
 ;(function (win,undefined) {
 
 
-	let iantoo = win.iantoo || {},
+	var iantoo = win.iantoo || {},
 		_dom;
 
 	const W = {
@@ -100,7 +100,6 @@ dayjs.locale('zh-cn')
 				clientX:'', //记录当前的点击坐标X
 				clientY:''
 			}
-
 		},
 
 
