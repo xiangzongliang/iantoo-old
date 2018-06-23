@@ -1,3 +1,8 @@
+
+
+
+///原始方法！！！未使用
+
 var fmtDate = function(DateStr){
     var date;
 

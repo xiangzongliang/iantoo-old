@@ -130,13 +130,13 @@ dayjs.locale('zh-cn')
         //创建页面的DOM
         creatDOM:function() {
             return {
-                pop_date_box:elem('div',{class:'iantooDate'}),
-                mask:elem('div',{class:'iantooMask'}),
-                date_head:elem('div',{class:'date_head'}),
-                date_title:elem('div',{class:'date_title'}),
-                date_week:elem('div',{class:'date_week'}),
-                date_content:elem('div',{class:'date_content'}),
-	            date_footer:elem('div',{class:'date_footer'}),
+                pop_date_box:elem.dom('div',{class:'iantooDate'}),
+                mask:elem.dom('div',{class:'iantooMask'}),
+                date_head:elem.dom('div',{class:'date_head'}),
+                date_title:elem.dom('div',{class:'date_title'}),
+                date_week:elem.dom('div',{class:'date_week'}),
+                date_content:elem.dom('div',{class:'date_content'}),
+	            date_footer:elem.dom('div',{class:'date_footer'}),
             }
         },
 
@@ -170,7 +170,7 @@ dayjs.locale('zh-cn')
                 week = la.week
 
             for(var wi in week){
-                var weekNode = elem('a')
+                var weekNode = elem.dom('a')
                 weekNode.innerText = week[wi]
                 _dom.date_week.appendChild(weekNode)
             }
@@ -193,7 +193,7 @@ dayjs.locale('zh-cn')
 			    };
 			    that.data.currentDate = dateNode
 			    //计算页面要渲染的三个月的日历
-			    that.calcPageDate(2)
+			    that.calcPageDate()
 			    that.setHead()
 			    //计算并显示页面中的月份详情
 			    that.calcMonth(_dom)
@@ -231,7 +231,7 @@ dayjs.locale('zh-cn')
 
 
             //计算页面要渲染的三个月的日历
-            this.calcPageDate(1)
+            this.calcPageDate()
 
 
 
@@ -295,13 +295,13 @@ dayjs.locale('zh-cn')
 
 
             //修改提示点的背景颜色,date_sign为正常的提示颜色，date_sign overdue为过期的提示颜色
-            styleSheets.insertRule('.month_box p a.date_sign::before { background: '+ this.data.config.theme.selectGB +' }', 0);
-            styleSheets.insertRule('.month_box p a.date_sign.overdue::before { background: '+ this.data.config.theme.overdueRemindingColor +' }', 0)
+            styleSheets.insertRule('.month_box p a span { background: '+ this.data.config.theme.selectGB +' }', 0);
+            styleSheets.insertRule('.month_box p a.overdue span { background: '+ this.data.config.theme.overdueRemindingColor +' }', 0)
 
             //渲染结束调用方法
             this.renderEnd(dom)
             //添加事件监听
-            this.event(dom)
+            this.event()
             //首次渲染完成之后回调
             this.data.config.render(this.data.constTody) //回调系统当前时间
         },
@@ -340,8 +340,7 @@ dayjs.locale('zh-cn')
 
 
         //计算页面显示的三个月的日历数组
-        calcPageDate:function(o) {
-            console.log(o)
+        calcPageDate:function() {
             var currentDate = this.data.currentDate,  //当前显示的是那个月
                 pageMonthArr = this.data.pageMonthArr, //显示的三个月份的数组
                 year = currentDate.Y,
@@ -386,20 +385,20 @@ dayjs.locale('zh-cn')
 
 
         //计算页面上显示月的详细内容
-        calcMonth:function(dom) {
+        calcMonth:function() {
         	//每次渲染的时候先清空之前的内容
-	        dom.date_content.innerHTML = ''
+	        _dom.date_content.innerHTML = ''
             var pageMonthArr = this.data.pageMonthArr,
                 that = this
 
 
             for(var pi in pageMonthArr){
-                var monthBox = that.renderMonth(dom,{
+                var monthBox = that.renderMonth(_dom,{
                     year:pageMonthArr[pi].year,
                     month:pageMonthArr[pi].month
                 })
 
-                dom.date_content.appendChild(monthBox)
+                _dom.date_content.appendChild(monthBox)
             }
         },
 
@@ -504,7 +503,7 @@ dayjs.locale('zh-cn')
         renderMonth:function(dom,opction) {
             var that = this,
                 move = this.data.config.move,
-                monthBox = elem('div',{class:'month_box'}),
+                monthBox = elem.dom('div',{class:'month_box'}),
                 year = opction.year,
                 month = opction.month,
                 totalDay = this.fmtDate(year + '-' + month + '-1 08:00:01'), //获取当月一号对应的相关信息
@@ -537,9 +536,9 @@ dayjs.locale('zh-cn')
 
 
             for(var ri = 0;ri<row;ri++){
-                var p = elem('p')
+                var p = elem.dom('p')
                 for(var di = 0;di<7;di++){
-                    var a = elem('a'),
+                    var a = elem.dom('a'),
                         nodeA = (ri*7)+di+1,
                         showDay = nodeA - date_one_week  //显示的日期--天
 
@@ -560,6 +559,7 @@ dayjs.locale('zh-cn')
                         if(isY_M && showDay==system_day){
                             a.style.backgroundColor = this.data.config.theme.selectGB
                             a.style.color = this.data.config.theme.selectFontColor
+                            elem.addClass(a,'day')
                             //将当前的标签放在JS中存储
                             that.data.selectDom = a
                         }
@@ -567,9 +567,9 @@ dayjs.locale('zh-cn')
 
                         //去设置当天是否背标记提醒事件
                         that.signDay(a,{
-                            y:year,
-	                        m:month,
-                            d:showDay
+                            Y:year,
+	                        M:month,
+                            D:showDay
                         })
 
 
@@ -608,9 +608,12 @@ dayjs.locale('zh-cn')
 
 
         //判断当天是不是背标记,该方法为高频次调用，不能阻塞
-        signDay:function (dom,opction) {
+        signDay:function (a_dom,opction) {
             var signArr = this.data.config.sign,  //是否标记的年月日的数组,
-	            constTody = this.data.constTody
+	            constTody = this.data.constTody,
+                signSpan = elem.dom('span')
+
+
 
 
             for(var si in signArr){
@@ -619,20 +622,21 @@ dayjs.locale('zh-cn')
                     month = parseInt(sign[1]),
 	                day = parseInt(sign[2])
 
-                if(year == opction.y && month == opction.m && day == opction.d){
+                if(year == opction.Y && month == opction.M && day == opction.D){
 	                //如果是提醒的日期需要标记一个样式,改样式的背景会背::befor属性渲染
-	                dom.className = 'date_sign'
+	                //a_dom.className = 'date_sign'
+                    a_dom.appendChild(signSpan)
 
 
 
 	                // 如果提醒的时间小于系统对应的今天时间，则显示颜色不同
-	                var opctionDate = new Date(opction.y,opction.m,opction.d),
-		                constDate = new Date(constTody.y,constTody.m,constTody.d),
+	                var opctionDate = new Date(opction.Y,opction.M,opction.D),
+		                constDate = new Date(constTody.Y,constTody.M,constTody.D),
 		                opctionDate_ms = opctionDate.getTime(),
 		                constDate_ms = constDate.getTime()
 
-	                if(opctionDate_ms <= constDate_ms){
-		                dom.className = 'date_sign overdue'
+	                if(opctionDate_ms < constDate_ms){
+		                a_dom.className = 'overdue'
 	                }
                 }
             }
@@ -642,11 +646,11 @@ dayjs.locale('zh-cn')
 
 
         //事件监听
-        event:function(dom) {
+        event:function() {
         	var that = this
             if(this.data.config.maskClosePage === true){
-	            dom.mask.onclick = function (ev) {
-					that.close(dom)
+	            _dom.mask.onclick = function (ev) { //点击这招关闭日历 
+					that.close() 
 	            }
             }
         },
@@ -680,9 +684,7 @@ dayjs.locale('zh-cn')
 
                 var translateY = parseInt(translate[5]), //一直在获取translateY属性的值
                     translateX = parseInt(translate[4])
-
-
-
+            //----------
             that.data.slider.Y = clientY
 	        that.data.slider.X = clientX
             that.data.translateY = translateY
@@ -720,15 +722,12 @@ dayjs.locale('zh-cn')
                 X = that.data.slider.X,
                 H = that.data.slider.H,  //每个月份的高度
                 W = that.data.slider.W,
-                month_box = dom.date_content.getElementsByClassName('month_box'),
+                month_box = dom.date_content.querySelectorAll('.month_box'),
                 elastic = that.data.config.elastic, //弹性比
                 proportion = Math.abs(clientY - Y)/H,  //获取纵向滑动的绝对值
 	            proportionX = Math.abs(clientX - X)/W,  //获取横向滑动的绝对值
 	            sliderStatus = '',//滑动的方向和状态，对应的值分别为up\down\left\right
 	            springback = true //是否因为弹力不够而回弹
-
-
-
 
 			//优化代码
 	        if(that.data.config.rollDirection == 'LR'){//横向滚动
@@ -755,8 +754,6 @@ dayjs.locale('zh-cn')
 			        month_box[1].style.transform = "translateX(0px)"
 			        month_box[2].style.transform = "translateX("+W+"px)"
 		        }
-
-
 	        }else{//纵向滚动
 		        if(proportion > elastic){ //超过了弹性值
 			        if((clientY - Y)>0){//向下滑动
@@ -783,8 +780,6 @@ dayjs.locale('zh-cn')
 			        month_box[2].style.transform = "translateY("+H+"px)"
 		        }
 	        }
-
-
 
 
 
@@ -822,46 +817,42 @@ dayjs.locale('zh-cn')
 	            currentDate = this.data.currentDate,
 	            constTody = this.data.constTody,
 	            today = this.data.today,
+                selectDom = this.data.selectDom,
                 callbackData = {
-                    y:currentDate.y,
-                    m:currentDate.month,
-                    d:parseInt(clickDom.innerText)
+                    Y:currentDate.Y,
+                    M:currentDate.M,
+                    D:parseInt(clickDom.innerText)
                 }
-
-
 
                 //移除之前DOM的样式
-                if(this.data.selectDom){
-                    this.data.selectDom.removeAttribute('style')
-                }
+                elem.removeClass(selectDom,'day')
+                selectDom.removeAttribute('style')
 
 
                 //如果对应的是系统时间，需要恢复之前的灰色样式
-                if(constTody.y == today.y && constTody.m == today.m && constTody.d == today.d){
-	                this.data.selectDom.style.backgroundColor = this.data.config.theme.systemBG
-	                this.data.selectDom.style.color = this.data.config.theme.systemFontColor
+                if(constTody.Y == today.Y && constTody.M == today.M && constTody.D == today.D){
+	                selectDom.style.backgroundColor = this.data.config.theme.systemBG
+	                selectDom.style.color = this.data.config.theme.systemFontColor
                 }
 
 
 
                 //给新点击的DOM添加样式
                 if(clickDom.innerText){
+                    elem.addClass(clickDom,'day')
                     clickDom.style.backgroundColor = this.data.config.theme.selectGB
                     clickDom.style.color = this.data.config.theme.selectFontColor
                 }
 
-            //重新记录点击的DOM
-            this.data.selectDom = clickDom
-            this.data.today = callbackData
+                //重新记录点击的DOM
+                this.data.selectDom = clickDom
+                this.data.today = callbackData
 
 
-
-			
-            //回传到API中
-            this.data.config.clickDay(callbackData,function () {
-	            that.close()
-            })
-
+                //回传到API中
+                this.data.config.clickDay(callbackData,function () {
+    	            that.close()
+                })
         },
 
 
@@ -881,16 +872,6 @@ dayjs.locale('zh-cn')
                 m:getdate.$m,
                 s:getdate.$s,
                 w:getdate.$W
-            }
-
-            return {
-                y:getdate.$y,
-                month:getdate.$M + 1,
-                d:getdate.$D,
-                h:getdate.$H,
-                m:getdate.$m,
-                s:getdate.$s,
-                week:getdate.$W
             }
         },
     }

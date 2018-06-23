@@ -11,7 +11,7 @@ import "../less/iantooweek.less"
 
 
 import dayjs from 'dayjs'
-import elem from './lib/elem.js'
+import elem from './lib/elem'
 
 
 dayjs.locale('zh-cn')
@@ -108,9 +108,9 @@ dayjs.locale('zh-cn')
 		//创建页面的DOM
 		creatDOM:function() {
 			return {
-				iantooWeek:elem('div',{class:'iantooWeek'}), //整体的日历控件
-				weekBar:elem('div',{class:'weekBar'}), //星期栏
-				C_box:elem('div',{class:'calendarBox'}) //日历的外框
+				iantooWeek:elem.dom('div',{class:'iantooWeek'}), //整体的日历控件
+				weekBar:elem.dom('div',{class:'weekBar'}), //星期栏
+				C_box:elem.dom('div',{class:'calendarBox'}) //日历的外框
 			}
 		},
 
@@ -123,7 +123,7 @@ dayjs.locale('zh-cn')
 		setWeek:function(dom) {
 			let week = this.data.week
 			for(let wi in week){
-				let weekA = elem('a')
+				let weekA = elem.dom('a')
 				weekA.innerText = week[wi]
 				dom.weekBar.appendChild(weekA)
 			}
@@ -417,12 +417,12 @@ dayjs.locale('zh-cn')
 		//渲染星期的DOM
 		renderWeek:function (arr,dom,type) {
 			var that = this,
-				weekBox = elem('div',{class:'weekBox'}),
+				weekBox = elem.dom('div',{class:'weekBox'}),
 				recordingTime = this.data.recordingTime, //当前需要选中的时间
 				systemDate = this.data.systemDate //当前的系统时间
 
 			for(let wib in arr){
-				var dayBox = elem('a'),
+				var dayBox = elem.dom('a'),
 					isSystemDate = false; //是否是系统时间
 
 
@@ -498,7 +498,7 @@ dayjs.locale('zh-cn')
 			for(var si in sign){
 				var newSignDay = this.fmtDate(sign[si])
 				if(opction.year == newSignDay.year && opction.month == newSignDay.month && opction.day == newSignDay.day){
-					var signDom = elem('span')
+					var signDom = elem.dom('span')
 					aDOM.appendChild(signDom)
 				}
 			}
@@ -688,64 +688,56 @@ dayjs.locale('zh-cn')
 
 		//当点击某一天的时候
 		clickDay:function (e,that) {
-			var clickDom = this.data.clickDom
+			var clickDom = this.data.clickDom,
+				dayText = parseInt(that.innerText),  //点击的当前的天
+				currentShowWeek = this.data.currentShowWeek, //当前显示的星期列表
+				callBackDate, //回调给前面的时间
+				recordingTime = this.data.recordingTime, //当前正选中的时间
+				systemDate = this.data.systemDate //系统时间
 
 
-			//删除之前DOM的class
+
+			for(var ci in currentShowWeek){
+				if(currentShowWeek[ci].day == dayText){
+					callBackDate = {
+						year:currentShowWeek[ci].year,
+						month:currentShowWeek[ci].month,
+						day:dayText
+					}
+				}
+			}
+
+
+
+
+			//删除之前DOM的class和style
 			clickDom.removeAttribute("style")
-
-			var befClass = clickDom.getAttribute('class'),
-				classLength = befClass.split(' ')
+			elem.removeClass(clickDom,'today')
 
 
-			// 移除前一个的样式
-			if(befClass!= null && befClass.indexOf('systemDate')>=0){
-				clickDom.setAttribute('class','systemDate');
+
+			//如果将要取消样式的是系统时间,则需要添加class
+			if(recordingTime.year == systemDate.year && recordingTime.month == systemDate.month && recordingTime.day == systemDate.day){
 				clickDom.style.background = this.data.config.theme.systemBG
 				clickDom.style.color = this.data.config.theme.systemFontColor
-			}else{
-				clickDom.removeAttribute('class')
 			}
-
-
 
 			//为新的DOM添加Class
-			this.data.clickDom = that
-			var thatClass = that.getAttribute('class')
-			if(thatClass!= null && thatClass.indexOf('systemDate')>=0){
-				that.setAttribute('class','today systemDate')
-			}else{
-				that.setAttribute('class','today')
-			}
+			elem.addClass(that,'today')
 			that.style.background = this.data.config.theme.selectGB
 			that.style.color = this.data.config.theme.selectFontColor
 
 
 
-
+			//记录新的DOM
+			this.data.clickDom = that
+			//重新设置当前时间
+			this.data.recordingTime = callBackDate
+			//回调方法
+			this.data.config.clickDay(callBackDate)
 			
-
-
-			var dayText = parseInt(that.innerText),
-				currentShowWeek = this.data.currentShowWeek
-
-			for(var ci in currentShowWeek){
-				if(currentShowWeek[ci].day == dayText){
-
-					//修改当前选择的时间
-					var callBackDate = {
-						year:currentShowWeek[ci].year,
-						month:currentShowWeek[ci].month,
-						day:dayText
-					}
-
-					this.data.recordingTime = callBackDate
-
-					//回调方法
-					this.data.config.clickDay(callBackDate)
-				}
-			}
 		},
+
 
 
 		fmtDate:function(DateStr) {
