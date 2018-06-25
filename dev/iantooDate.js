@@ -303,7 +303,10 @@ dayjs.locale('zh-cn')
             //添加事件监听
             this.event()
             //首次渲染完成之后回调
-            this.data.config.render(this.data.constTody) //回调系统当前时间
+            this.data.config.render({
+                date:dateNode,
+                systemDate:this.data.constTody
+            }) //回调系统当前时间
         },
 
 
@@ -883,6 +886,9 @@ dayjs.locale('zh-cn')
         },
         close(){
             D.close()
+        },
+        fmtDate(date){
+            return D.fmtDate(date)
         }
     }
 
