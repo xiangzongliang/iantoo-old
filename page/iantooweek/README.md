@@ -1,35 +1,19 @@
-[TOC]
+### 使用
 
-## 简介
-
-`iantooweek`是一款基于移动端的横向滚动手机日历控件,不依赖于任何三方模块或框架。
-
-[github连接](https://github.com/xiangzongliang/iantoo "github连接")
-
-[========]
-
-
-
-## 体验
-
-![](http://p9hbij6zd.bkt.clouddn.com/iantooDate_Url.png)
-
-
-
-## 快速使用
-
-只需要在页面引入如下文件即可：
-
-```html
-./build/js/iantooweek.js
+引入文件:
+```text
 ./build/css/iantooweek.css
+./build/js/iantooweek.js
 ```
-并在页面上使用如下方法进行调用：
 
+并在页面上调用:
 ```javascript
 iantoo.week()
 ```
-通过调用全局`window`上的`iantoo`对象上的`week`属性即可在页面渲染出效果
+详细使用方法见`page/iantooweek/index.html`
+
+
+
 
 
 ## API
@@ -47,7 +31,7 @@ iantoo.week()
 
 > 非必填、默认值：系统的当前时间，即：`new Date()`得到的时间。 、`type:string`
 
-默认初始化的时间,格式必须为“`yyyy`-`mm`-`dd` `hh`:`mm`:`ss`” 或 “`yyyy`-`mm`-`dd`”。
+默认初始化的时间,格式必须为“`yyyy-mm-dd hh:mm:ss`” 或 “`yyyy-mm-dd`”。
 
 
 
@@ -109,8 +93,8 @@ iantoo.week()
 
 ```javascript
 iantoo.week({
-	clickDate:function(data){
-		
+	clickDate:function(date){
+		console.info(date) 		//{year: 2018, month: 6, day: 29}
 	}
 })
 
@@ -148,7 +132,32 @@ iantoo.week({
 
 > 非必填、`function`。
 
-每次滑动一星期之后回调的方法。返回当前显示的一星期的时间数组。
+
+日历控件更新之后哦调用,只有在调用了iantoo.week.update()的时候才会被触发
+
+
+### scroll
+
+> 非必填、`function`。
+
+每次滑动之后调用的方法,返回当前显示的七天的日期。
+
+
+
+### touchStartFun
+
+> 非必填、`function`。
+
+滑动开始触发的方法。
+
+### touchEndFun
+
+> 非必填、`function`。
+
+滑动结束触发的方法
+
+>注：`touchStartFun` 和 `touchEndFun`方法对应的则是`touchstart`和`touchend`,通常用在安卓设备上。当打开一个`activity`的以后，如果有原生的横向滑动方法,需要原生支持方来来禁止滚动,则可以通过这两个方法来控制是否禁止原生的滑动。对于`IOS`设备已经通过阻止冒泡事件进行控制,不需要再做控制。
+
 
 
 

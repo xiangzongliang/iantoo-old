@@ -43,7 +43,7 @@
 			el:'#iantooDate',
 			//date:'2018-06-01 23:45:32',
 			lang:'cn',
-			rollDirection:'UD', // 'LR' || 'UD'
+			rollDirection:'LR', // 'LR' || 'UD'
 			header:true,
 			week:true,
 			mask:{
@@ -60,17 +60,24 @@
 			},
 			move:true,
 			sign:["2018-05-25",'2018-05-30','2018-06-10','2018-06-23','2018-06-25'],
-			clickDay:function (data) {
-				console.log(data)
+			clickDay:function (date,close) {
+				console.log(date,close)
 			},
 			slide:function (data) {
 				console.log(data)
 				//每次更新并切换了日历完成才会调用
 			},
-			clickFooter:function (systemDate,closeDate) { //点击底部的按钮
-				console.log('dianjidibu')
+			clickFooter:function (systemDate,close) { //点击底部的按钮
+				console.log(systemDate)
+				close()
 			},
-			render:function () {
+			render:function (data) {
+				/*
+				{
+	                date:dateNode,
+	                systemDate:this.data.constTody
+	            }
+				*/
 				//每次打开日历渲染完成只会调用一次
 				console.info('初始化渲染完成')
 			},

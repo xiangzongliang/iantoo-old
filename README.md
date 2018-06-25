@@ -9,9 +9,9 @@
 
 ### 目录介绍
 
-
-|-- assets  			//静态文件存放目录   
-|-- build				//打包生成的目录,通常用于生产引入使用   
+```
+|-- assets				//静态文件存放目录 
+|-- build				//打包生成的目录,通常用于生产引入使用  
 |--	 |-- css   			
 |--	 |-- js	   		
 |-- dev					//开发目录   
@@ -23,15 +23,14 @@
 |-- 404.html 			//404   
 |-- main.js				//入口打包文件   
 |-- package.jsom   
-
+```
 
 
 
 ### API 
-
-...文档完善中   
-[iantooweek](http://xiangzongliang.com/tool)   
-[iantooDate](http://xiangzongliang.com/tool)   
+ 
+[iantooweek](https://github.com/xiangzongliang/iantoo/tree/prod_1.0/page/iantooweek)   
+[iantooDate](https://github.com/xiangzongliang/iantoo/tree/prod_1.0/page/iantooDate)   
 
 
 
@@ -78,7 +77,7 @@ npm run build
 
 ### 当前版本
 
-V.1.1.0
+V.1.0.1
 
 
 
