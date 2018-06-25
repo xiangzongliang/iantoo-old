@@ -488,8 +488,8 @@ dayjs.locale('zh-cn')
             that.data.config.slide({
                 type:type,
                 date:{
-                    y:newYear,
-                    m:newMonth
+                    Y:newYear,
+                    M:newMonth
                 }
             })
         },

@@ -767,12 +767,13 @@ dayjs.locale('zh-cn')
 			//重新赋值
 			W.data.config.sign = opction.sign ? opction.sign : W.data.config.sign
 			W.data.config.date = opction.date ? opction.date : W.data.config.date
+			W.data.recordingTime = W.fmtDate(W.data.config.date)
 
 			//清空之前的日历内容
 			_dom.C_box.innerHTML = ''
 			W.setCalendar(_dom)
 			W.renderEnd(_dom)
-			W.data.config.updataRender()
+			W.data.config.updataRender(W.data.recordingTime)
 		},
 		//暴露给外层的时间转换方式
 		fmtDate:function(date){
