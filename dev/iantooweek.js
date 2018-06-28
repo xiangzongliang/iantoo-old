@@ -28,8 +28,8 @@ dayjs.locale('zh-cn')
 
 	const W = {
 		//初始化
-		init:function(opction) {
-			var opction = opction || {}
+		init:function(opction = {}) {
+			//var opction = opction || {}
 			this.data.config.el = opction.el || 'body'
 			this.data.config.date = opction.date || ''
 			this.data.config.showWeek = opction.showWeek ? true : false
@@ -39,6 +39,7 @@ dayjs.locale('zh-cn')
 			this.data.config.theme.selectFontColor = opction.theme.selectFontColor || '#FFFFFF'
 			this.data.config.theme.systemBG = opction.theme.systemBG || '#ececec'
 			this.data.config.theme.systemFontColor = opction.theme.systemFontColor || '#555555'
+			this.data.config.theme.overdueRemindingColor = opction.theme.overdueRemindingColor || '#c4c4c4'
 			this.data.config.updataRender = opction.updataRender || function () {}
 			this.data.config.sign = opction.sign || []
 			this.data.config.touchStartFun = opction.touchStartFun || function(){}
@@ -62,7 +63,8 @@ dayjs.locale('zh-cn')
 					selectGB:'', //当前选择的时间的颜色
 					selectFontColor:'', //当前选择的时间的文字颜色,默认#ffffff
 					systemBG:'', //系统对应的时间的背景色
-					systemFontColor:'' //系统对应时间的文字颜色
+					systemFontColor:'', //系统对应时间的文字颜色
+					overdueRemindingColor:'' //过期时间标记的颜色
 				}, //主题颜色[0]:主题色
 
 				sign:'', //需要被标记的时间,会在a标签中插入span标签
@@ -421,6 +423,7 @@ dayjs.locale('zh-cn')
 				recordingTime = this.data.recordingTime, //当前需要选中的时间
 				systemDate = this.data.systemDate //当前的系统时间
 
+
 			for(let wib in arr){
 				var dayBox = elem.dom('a'),
 					isSystemDate = false; //是否是系统时间
@@ -429,7 +432,7 @@ dayjs.locale('zh-cn')
 
 				//判断是否为系统时间
 				if(arr[wib].year == systemDate.year && arr[wib].month == systemDate.month && arr[wib].day == systemDate.day){
-					dayBox.setAttribute('class','systemDate');
+					elem.addClass(dayBox,'systemDate')
 					dayBox.style.background = this.data.config.theme.systemBG
 					dayBox.style.color = this.data.config.theme.systemFontColor
 					isSystemDate = true
@@ -438,10 +441,10 @@ dayjs.locale('zh-cn')
 
 				//当天,着重标注
 				if(arr[wib].year == recordingTime.year && arr[wib].month == recordingTime.month && arr[wib].day == recordingTime.day){
-					if(isSystemDate === true){
-						dayBox.setAttribute('class','today systemDate');
+					if(isSystemDate === true){  //如果是系统时间
+						elem.addClass(dayBox,'today systemDate')
 					}else{
-						dayBox.setAttribute('class','today');
+						elem.addClass(dayBox,'today')
 					}
 					dayBox.style.background = this.data.config.theme.selectGB
 					dayBox.style.color = this.data.config.theme.selectFontColor
@@ -494,11 +497,17 @@ dayjs.locale('zh-cn')
 
 		//计算是否标记时间,高频率调用方法，不能堵塞
 		signDate:function (opction,aDOM) {
-			var sign = this.data.config.sign
-			for(var si in sign){
+			var sign = this.data.config.sign,
+				systemDate = this.data.systemDate //当前的系统时间
+
+			for(let si in sign){
 				var newSignDay = this.fmtDate(sign[si])
 				if(opction.year == newSignDay.year && opction.month == newSignDay.month && opction.day == newSignDay.day){
 					var signDom = elem.dom('span')
+					//newSignDay.value+864*Math.pow(10,5) 是指用当天的00:00:00的时间 + 86400000毫秒,也就是下一天的00:00:00,需要包含当天的全天时间,这样当天的所有时间都会被标记
+					if((newSignDay.value+864*Math.pow(10,5)) < systemDate.value){
+						elem.addClass(signDom,'overdue')
+					}
 					aDOM.appendChild(signDom)
 				}
 			}
@@ -754,7 +763,8 @@ dayjs.locale('zh-cn')
 				h:getdate.$H,
 				m:getdate.$m,
 				s:getdate.$s,
-				week:getdate.$W
+				week:getdate.$W,
+				value:getdate.valueOf()
 			}
 		}
 	}

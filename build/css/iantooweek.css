@@ -57,6 +57,9 @@ body {
   border-radius: 10px;
   background: #16aefd;
 }
+.iantooWeek .weekBox a .overdue {
+  background: #c4c4c4;
+}
 .iantooWeek .weekBox .today,
 .iantooWeek .weekBox .systemDate {
   border-radius: 100px;

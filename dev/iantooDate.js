@@ -27,8 +27,8 @@ dayjs.locale('zh-cn')
     const D = {
 
         //初始化
-        init:function(opction) {
-            var opction = opction || {}
+        init:function(opction = {}) {
+            //var opction = opction || {}
 	        this.data.config.el = opction.el || ''
             this.data.config.date = opction.date || ''
             this.data.config.lang = opction.lang || 'cn'
