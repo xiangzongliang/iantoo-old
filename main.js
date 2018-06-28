@@ -19,7 +19,7 @@ config = {
 	mode:'production', //production || development
 	entry: {
 		'iantooweek':path.resolve(__dirname, './dev/iantooweek'),
-		'iantooDate':path.resolve(__dirname, './dev/iantooDate'),
+		'iantooDate':path.resolve(__dirname, './dev/iantooDate')
 	},
 	output: {
 		path: path.resolve(__dirname, './build'), // var buildDir = path.resolve(__dirname, './build');

@@ -15,12 +15,12 @@
 		el:'.iantooDateWeek',
 		//date:'2018-6-23',
 		showWeek:true,
-		sign:['2018-06-10','2018-6-18','2018-06-22'],
+		sign:['2018-06-10','2018-6-28','2018-06-27','2018-06-29'],
 		theme:{
 			selectGB:'#16aefd',
 			selectFontColor:'#ffffff',
 			systemBG:'#ffffff',
-			systemFontColor:'#16aefd',
+			systemFontColor:'#16aefd'
 		},
 		render:function (data,systemDate) {
 			console.log('首次渲染完成',data,systemDate)
@@ -47,12 +47,12 @@
 	})
 
 
-	setTimeout(function(){
-		iantoo.week.update({
-			date:'2018-6-28',
-			sign:['2018-06-15','2018-06-22','2018-06-23']
-		})
-	},3000)
+	// setTimeout(function(){
+	// 	iantoo.week.update({
+	// 		date:'2018-6-28',
+	// 		sign:['2018-06-15','2018-06-22','2018-06-23']
+	// 	})
+	// },3000)
 
 	
 </script>
