@@ -27,9 +27,18 @@ iantoo.date()
 
 #### date:'2018-06-22'
 
->`type:string`    默认 系统时间    `yyyy-mm-dd hh:mm:ss  |  yyyy-mm-dd`
+>`type:string`    默认 当前时间    `yyyy-mm-dd hh:mm:ss  |  yyyy-mm-dd`
 
 初始化时间的,不设置为初始化系统当前的时间。
+
+
+
+####setSystemDate
+
+>`type:string`    默认 系统时间    `yyyy-mm-dd hh:mm:ss  |  yyyy-mm-dd  | 时间戳`
+
+手动设置系统时间,通常情况不适用该功能。
+主要是为了避免用户修改了手机日历之后，获取的本地与服务器时间不统一,可以通过获取服务器时间进行手动设置。将不在获取本地时间
 
 
 
@@ -142,7 +151,7 @@ iantoo.date()
 
 
 
-##### theme.overdueRemindingColor
+##### theme.overdueRemindingColor  `已被移除`
 
 >`type:string`
 

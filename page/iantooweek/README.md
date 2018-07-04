@@ -1,3 +1,25 @@
+## 目录
+* [快速使用](#使用)
+* [API](#api)
+	* [el](#el)
+	* [date](#date)
+	* [setSystemDate](#setSystemDate)
+	* [showWeek](#showWeek)
+	* [sign](#sign)
+	* [theme](#theme)
+	* [clickDate](#clickDate)
+	* [render](#render)
+	* [updataRender](#updataRender)
+	* [scroll](#scroll)
+	* [touchStartFun](#touchStartFun)
+	* [touchEndFun](#touchEndFun)
+
+* [维护与更新](#维护与更新)
+
+
+
+
+
 ### 使用
 
 引入文件:
@@ -35,6 +57,15 @@ iantoo.week()
 
 
 
+####setSystemDate
+
+>`type:string`    默认 系统时间    `yyyy-mm-dd hh:mm:ss  |  yyyy-mm-dd  | 时间戳`
+
+手动设置系统时间,通常情况不适用该功能。
+主要是为了避免用户修改了手机日历之后，获取的本地与服务器时间不统一,可以通过获取服务器时间进行手动设置。将不在获取本地时间
+
+
+
 
 ### showWeek
 
@@ -50,6 +81,17 @@ iantoo.week()
 > 非必填、`array`,默认`[]`。
 
 用于标示某一天提醒,被标记的某一天下面会生成一个圆点提示。传入格式如：`“['2018-06-5','2018-6-23']”`
+
+
+
+
+### RootNoScroll
+
+> 非必填 、`boolean`,默认`true`可滚动。
+
+`false`时禁止左右滚动,禁止滚动之后不会在左右滑动,将不会触发`scroll`、`touchStartFun` 和 `touchEndFun`方法。只有在兼容部分机型的时候才会调用。
+
+
 
 
 
@@ -159,6 +201,9 @@ iantoo.week({
 >注：`touchStartFun` 和 `touchEndFun`方法对应的则是`touchstart`和`touchend`,通常用在安卓设备上。当打开一个`activity`的以后，如果有原生的横向滑动方法,需要原生支持方来来禁止滚动,则可以通过这两个方法来控制是否禁止原生的滑动。对于`IOS`设备已经通过阻止冒泡事件进行控制,不需要再做控制。
 
 
+
+### 维护与更新
+...
 
 
 

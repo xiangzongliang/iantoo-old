@@ -86,6 +86,10 @@ body {
   margin-left: -3px;
   border-radius: 20px;
   position: absolute;
+  background: #2A92EB;
+}
+.month_box p a.overdue span {
+  background: #ececec;
 }
 .month_box p a.day span {
   background: #ffffff;
