@@ -31,6 +31,7 @@ dayjs.locale('zh-cn')
             //var opction = opction || {}
 	        this.data.config.el = opction.el || ''
             this.data.config.date = opction.date || ''
+            this.data.config.setSystemDate = opction.setSystemDate || ''
             this.data.config.lang = opction.lang || 'cn'
             this.data.config.mask = opction.mask.show ? true : false
 	        this.data.config.maskClosePage = opction.mask.closePage ? true : false
@@ -42,7 +43,6 @@ dayjs.locale('zh-cn')
 	        this.data.config.theme.selectFontColor = opction.theme.selectFontColor || '#ffffff'
 	        this.data.config.theme.systemBG = opction.theme.systemBG || '#ececec'
 	        this.data.config.theme.systemFontColor = opction.theme.systemFontColor || '#ffffff'
-	        this.data.config.theme.overdueRemindingColor = opction.theme.overdueRemindingColor || '#c4c4c4'
 
 
 
@@ -66,6 +66,7 @@ dayjs.locale('zh-cn')
             config:{
             	el:'', //日历插件渲染的位置
                 date : '',//指定渲染某个时间 格式 "2018-05-24" || "2000-02-22 23:19:56"
+                setSystemDate:'',//手动设置系统时间,主要避免手机端用户更改了系统时间,从而通过手动设置服务器时间为系统时间。如果不设置则是获取的本机时间
                 lang : '',//默认语言为中文
                 mask : true, //是否显示遮罩  默认开启
                 maskClosePage:'', //点击遮罩是否关闭，默认开启，只有在显示遮罩开启的模式下有用
@@ -74,7 +75,6 @@ dayjs.locale('zh-cn')
 	                selectFontColor:'', //选择的日历的文字颜色
 	                systemBG:'', //系统当前时间的背景色
 	                systemFontColor:'', //系统当前时间的文字颜色
-	                overdueRemindingColor:''//过期时间提醒的背景色
                 }, //主题颜色
 	            rollDirection:'UD',
                 selectDayColor:'', //默认选择今天的颜色
@@ -185,7 +185,7 @@ dayjs.locale('zh-cn')
 		    _dom.date_footer.onclick = function () {
         		// ------- 重新渲染当天需要执行的方法
         		that.data.config.date = '' //时间初始化为空
-			    var dateNode = that.fmtDate() //得到今天的时间
+			    var dateNode = that.fmtDate(that.data.config.setSystemDate) //得到今天的时间
 			    that.data.today = {
 				    y:dateNode.Y,
 				    m:dateNode.M,
@@ -214,9 +214,8 @@ dayjs.locale('zh-cn')
             var config = this.data.config,
                 dom = this.creatDOM(),
                 dateNode = this.fmtDate(config.date),
-	            constTody = this.fmtDate(),
+	            constTody = this.fmtDate(this.data.config.setSystemDate),
 	            styleSheets = document.styleSheets[0];
-
 
 
                 _dom = dom
@@ -275,13 +274,18 @@ dayjs.locale('zh-cn')
 
 		        elem.appendChild(dom.pop_date_box)
 		        if(this.data.config.mask){
+                    dom.mask.addEventListener('touchstart',function(e){
+                        e.stopPropagation()
+                    })
 			        elem.appendChild(dom.mask)
 		        }
 	        }else{
             	//避免重复渲染
 		        var iantooDate = document.querySelector('.iantooDate')
-		        iantooDate.outerHTML = ''
-
+                if(iantooDate){
+                    iantooDate.outerHTML = ''
+                }
+		        
 		        document.body.appendChild(dom.pop_date_box)
 		        if(this.data.config.mask){
 			        document.body.appendChild(dom.mask)
@@ -295,8 +299,15 @@ dayjs.locale('zh-cn')
 
 
             //修改提示点的背景颜色,date_sign为正常的提示颜色，date_sign overdue为过期的提示颜色
-            styleSheets.insertRule('.month_box p a span { background: '+ this.data.config.theme.selectGB +' }', 0);
-            styleSheets.insertRule('.month_box p a.overdue span { background: '+ this.data.config.theme.overdueRemindingColor +' }', 0)
+            /*
+            try{ //该方法在iphone 6上不支持,导致报错。摒弃-----
+                styleSheets.insertRule('.month_box p a span { background: '+ this.data.config.theme.selectGB +' }', 0);
+                styleSheets.insertRule('.month_box p a.overdue span { background: '+ this.data.config.theme.overdueRemindingColor +' }', 0)
+            }catch (e){
+                console.error('设置样式报错' + e)
+            }
+            */
+            
 
             //渲染结束调用方法
             this.renderEnd(dom)
@@ -396,10 +407,7 @@ dayjs.locale('zh-cn')
 
 
             for(var pi in pageMonthArr){
-                var monthBox = that.renderMonth(_dom,{
-                    year:pageMonthArr[pi].year,
-                    month:pageMonthArr[pi].month
-                })
+                var monthBox = that.renderMonth(_dom,pageMonthArr[pi])
 
                 _dom.date_content.appendChild(monthBox)
             }
@@ -548,6 +556,7 @@ dayjs.locale('zh-cn')
 	                if(nodeA > date_one_week && nodeA <= (month_day+date_one_week)){
                         a.innerText = showDay
 
+
                         // 如果计算的时间是系统的今天，则灰色标注
                         if(const_system_year == year && const_system_month == month && const_system_day == showDay){
 	                        a.style.backgroundColor = this.data.config.theme.systemBG
@@ -597,8 +606,8 @@ dayjs.locale('zh-cn')
             if(move){
                 monthBox.addEventListener('touchmove',function(e){
                 	that.touchmoveFun(e,dom,that);
-	                e.preventDefault();
-	                e.stopPropagation();
+	                e.preventDefault(); //阻止默认事件
+	                e.stopPropagation(); //阻止冒泡
                 },false)
             }
             monthBox.addEventListener('touchend',function(e){
@@ -666,10 +675,14 @@ dayjs.locale('zh-cn')
 		        _dom.pop_date_box.outerHTML = ''
 		        _dom.mask.outerHTML = ''
 	        }catch (e){
-		        document.querySelector(D.data.config.el).innerHTML = ''
+                if(D.data.config.el){
+                    document.querySelector(D.data.config.el).innerHTML = ''
+                }
 	        }finally {
 		        //关闭了页面回调
-		        this.data.config.close()
+                if(this.data.config.close){
+                    this.data.config.close()
+                }  
 	        }
 	    },
 
