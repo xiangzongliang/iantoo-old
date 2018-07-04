@@ -48,6 +48,13 @@ dayjs.locale('zh-cn')
 			this.data.config.scroll = opction.scroll || function(){}
 
 
+			if(opction.RootNoScroll === false){
+				this.data.config.RootNoScroll = false
+			}else{
+				this.data.config.RootNoScroll = true
+			}
+
+
 			this.render()
 		},
 
@@ -60,6 +67,7 @@ dayjs.locale('zh-cn')
 				setSystemDate:'', //手动设置系统时间,主要避免手机端用户更改了系统时间,从而通过手动设置服务器时间为系统时间
 				clickDay:'', //点击某一天的时候回调方法
 				showWeek:'', //是否显示星期栏
+				RootNoScroll:'', //禁止横向滑动,禁止之后将会整个日历不会在发生滑动效果
 				render:'', //首次渲染结束之后调用,[0]回调当前显示的七天的星期时间,[1]回调系统对应的当前的时间
 				theme:{
 					selectGB:'', //当前选择的时间的颜色
@@ -470,21 +478,20 @@ dayjs.locale('zh-cn')
 				weekBox.appendChild(dayBox)
 			}
 
-
-			//滑动监听
-			weekBox.addEventListener('touchstart',function(e){
-				that.touchstartFun(e,dom,that)
-			},false)
-			weekBox.addEventListener('touchmove',function(e){
-				that.touchmoveFun(e,dom,that);
-				e.preventDefault();
-				e.stopPropagation();
-			},false)
-			weekBox.addEventListener('touchend',function(e){
-				that.touchendFun(e,dom,that)
-			},false)
-
-
+			if(W.data.config.RootNoScroll === true){
+				//滑动监听
+				weekBox.addEventListener('touchstart',function(e){
+					that.touchstartFun(e,dom,that)
+				},false)
+				weekBox.addEventListener('touchmove',function(e){
+					that.touchmoveFun(e,dom,that);
+					e.preventDefault();
+					e.stopPropagation();
+				},false)
+				weekBox.addEventListener('touchend',function(e){
+					that.touchendFun(e,dom,that)
+				},false)
+			}
 
 			if(type == 'right'){ //如果是往右滑动则是在最前面添加DOM
 				dom.C_box.insertBefore(weekBox,dom.C_box.childNodes[0])

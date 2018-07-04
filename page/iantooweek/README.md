@@ -85,6 +85,17 @@ iantoo.week()
 
 
 
+### RootNoScroll
+
+> 非必填 、`boolean`,默认`true`可滚动。
+
+`false`时禁止左右滚动,禁止滚动之后不会在左右滑动,将不会触发`scroll`、`touchStartFun` 和 `touchEndFun`方法。只有在兼容部分机型的时候才会调用。
+
+
+
+
+
+
 ### theme 
 
 主题颜色
