@@ -4,7 +4,9 @@
 	height: auto;
 	.weekBar {
 		display: flex;
+		display: -webkit-flex;
 		justify-content: space-between;
+		-webkit-justify-content: space-between;
 		font-size: 10px;
 		color: #565D65;
 		box-sizing: border-box;
@@ -25,8 +27,10 @@
 		position: absolute;
 		width: 100%;
 		display: flex;
+		display: -webkit-flex;
 		padding: 0px 10px;
 		justify-content: space-between;
+		-webkit-justify-content: space-between;
 		box-sizing: border-box;
 		a{
 			align-items: center;
@@ -61,4 +65,8 @@
 }
 .iantooWeek .weekBox .today span{
 	background: #fff;
+}
+.I_animation{
+	transition: all 0.2s ease-in;
+	-webkit-transition: all 0.2s ease-in;
 }

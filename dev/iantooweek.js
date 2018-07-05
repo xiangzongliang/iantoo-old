@@ -531,11 +531,11 @@ dayjs.locale('zh-cn')
 			var weekBox = dom.C_box.querySelectorAll('.weekBox'),
 				offsetWidth = window.screen.availWidth || weekBox[1].offsetWidth
 
-			//渲染结束设置位置
-			weekBox[0].style.transform = "translateX(-"+offsetWidth+"px)"
-			weekBox[1].style.transform = "translateX(0px)"
-			weekBox[2].style.transform = "translateX("+offsetWidth+"px)"
-
+			//渲染结束设置位置,//此处有做兼容处理
+			weekBox[0].setAttribute('style', "transform:translateX(-"+offsetWidth+"px);-webkit-transform:translateX(-"+offsetWidth+"px)")
+			weekBox[1].setAttribute('style', "transform:translateX(0px);-webkit-transform:translateX(0px);")
+			weekBox[2].setAttribute('style', "transform:translateX("+offsetWidth+"px);-webkit-transform:translateX("+offsetWidth+"px)")
+		
 
 
 
@@ -571,7 +571,9 @@ dayjs.locale('zh-cn')
 
 				weekBox = that.renderWeek(renderArr,dom,type)
 
-				weekBox.style.transform = "translateX(-"+W+"px)"
+				//weekBox.style.transform = "translateX(-"+W+"px)"
+				weekBox.setAttribute('style', "transform:translateX(-"+W+"px);-webkit-transform:translateX(-"+W+"px)")
+
 
 
 			}else{
@@ -586,7 +588,9 @@ dayjs.locale('zh-cn')
 
 				weekBox = that.renderWeek(renderArr,dom,type)
 
-				weekBox.style.transform = "translateX("+W+"px)"
+				//weekBox.style.transform = "translateX("+W+"px)"
+				weekBox.setAttribute('style', "transform:translateX("+W+"px);-webkit-transform:translateX("+W+"px)")
+
 			}
 
 
@@ -603,12 +607,15 @@ dayjs.locale('zh-cn')
 			var clientY = e.changedTouches[0].clientY,
 				clientX = e.changedTouches[0].clientX,
 				month_box = _dom.C_box.querySelectorAll('.weekBox'),
-				translate = window.getComputedStyle(month_box[1], null).getPropertyValue("transform");
-				translate = translate.substring(0,translate.length-1)
-				translate = translate.split(',')
+				translate = month_box[1].getAttribute('style')
 
-			var translateY = parseInt(translate[5]), //一直在获取translateY属性的值
-				translateX = parseInt(translate[4])
+
+				translate = translate.split(';')
+				translate = parseInt(0 + translate[0])
+
+
+			var translateY = 0, //一直在获取translateY属性的值
+				translateX = translate
 
 
 			that.data.touch.translateX = translateX
@@ -632,9 +639,10 @@ dayjs.locale('zh-cn')
 
 
 
-			month_box[0].style.transform = "translateX("+(coordinateX-W)+"px)"
-			month_box[1].style.transform = "translateX("+coordinateX+"px)"
-			month_box[2].style.transform = "translateX("+(coordinateX+W)+"px)"
+				month_box[0].setAttribute('style',"transform:translateX("+(coordinateX,W-W)+"px);-webkit-transform:translateX("+(coordinateX-W)+"px)")
+				month_box[1].setAttribute('style',"transform:translateX("+coordinateX+"px);-webkit-transform:translateX("+coordinateX+"px)")
+				month_box[2].setAttribute('style',"transform:translateX("+(coordinateX+W)+"px);-webkit-transform:translateX("+(coordinateX+W)+"px)")
+
 		},
 		touchendFun:function (e,dom,that) {
 			var clientY = e.changedTouches[0].clientY,
@@ -654,21 +662,22 @@ dayjs.locale('zh-cn')
 				isRender = true
 				if(direction>0){ //向右滑动
 					LorR = 'right'
-					month_box[0].style.transform = "translateX(0px)"
-					month_box[1].style.transform = "translateX("+W+"px)"
+					month_box[0].setAttribute('style', "transform:translateX(0px);-webkit-transform:translateX(0px)")
+					month_box[1].setAttribute('style', "transform:translateX("+W+"px);-webkit-transform:translateX("+W+"px)")
 					month_box[2].innerHTML = ''
 					month_box[2].outerHTML = ''
 				}else{//向左滑动
 					LorR = 'left'
-					month_box[1].style.transform = "translateX(-"+W+"px)"
-					month_box[2].style.transform = "translateX(0px)"
+					month_box[1].setAttribute('style', "transform:translateX(-"+W+"px);-webkit-transform:translateX(-"+W+"px)")
+					month_box[2].setAttribute('style', "transform:translateX(0px);-webkit-transform:translateX(0px)")
 					month_box[0].innerHTML = ''
 					month_box[0].outerHTML = ''	
 				}
 			}else{ //没有达到弹性值//回弹
-				month_box[0].style.transform = "translateX(-"+W+"px)"
-				month_box[1].style.transform = "translateX(-0px)"
-				month_box[2].style.transform = "translateX("+W+"px)"
+
+				month_box[0].setAttribute('style', "transform:translateX(-"+W+"px);-webkit-transform:translateX(-"+W+"px)")
+				month_box[1].setAttribute('style', "transform:translateX(0px);-webkit-transform:translateX(0px);")
+				month_box[2].setAttribute('style', "transform:translateX("+W+"px);-webkit-transform:translateX("+W+"px)")
 			}
 
 
@@ -676,13 +685,13 @@ dayjs.locale('zh-cn')
 
 			for(var mi in month_box){
 				if(typeof month_box[mi] === 'object'){
-					month_box[mi].style.transition = "all 0.2s ease-in"
+					elem.addClass(month_box[mi],'I_animation')
 				}
 			}
 			setTimeout(function () {
 				for(var boi=0;boi<month_box.length;boi++){
 					if(typeof month_box[boi] === 'object'){
-						month_box[boi].style.transition = "all 0s ease-in"
+						elem.removeClass(month_box[boi],'I_animation')
 					}
 				}
 			},200)
