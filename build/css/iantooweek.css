@@ -42,6 +42,7 @@ body {
 }
 .iantooWeek .weekBox a {
   align-items: center;
+  -webkit-align-items: center;
   color: #303942;
   font-size: 15px;
   text-align: center;

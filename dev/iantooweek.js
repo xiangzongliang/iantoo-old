@@ -3,8 +3,8 @@
 	version : 0.0.1
 	date : 2018-06-09
 	author : xiangzongliang
-	github :
-	doc :
+	github : https://github.com/xiangzongliang/iantoo/tree/master/page/iantooweek
+	doc : http://xiangzongliang.com/tool/iantooweek
  */
 import "../less/common.less"
 import "../less/iantooweek.less"

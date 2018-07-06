@@ -3,8 +3,8 @@
 	version : 2.0.1
 	date : 2018-06-07
 	author : xiangzongliang
-	github : https://github.com/xiangzongliang/iantoo-date
-	doc : http://xiangzongliang.com/tool
+	github : https://github.com/xiangzongliang/iantoo/tree/master/page/iantooDate
+	doc : http://xiangzongliang.com/tool/iantooDate
  */
 
 import "../less/common.less"
@@ -181,7 +181,7 @@ dayjs.locale('zh-cn')
 	    //设置底部内容
 	    setFooter:function () {
         	var that = this
-        	_dom.date_footer.innerText = '查看今天'
+        	_dom.date_footer.innerText = `查看今天`
 		    _dom.date_footer.onclick = function () {
         		// ------- 重新渲染当天需要执行的方法
         		that.data.config.date = '' //时间初始化为空
@@ -222,7 +222,7 @@ dayjs.locale('zh-cn')
 
 
             //初始化两个时间,注：⚠这里必须去等于一个新的对象，否则在对象深度复制的时候会出现问题️
-            this.data.today = dateNode;
+            this.data.today = JSON.parse(JSON.stringify(dateNode)); //此处深拷贝,否则指针会指向currentDate相同的对象
             this.data.currentDate = dateNode
 
             //初始化系统的时间，为显示今天标为灰色准备,改时间设置之后不会改变
@@ -323,6 +323,21 @@ dayjs.locale('zh-cn')
 
 
 
+
+        //设置动画
+        callbackAnimation:function(X,Y){
+            var ani_str = ''
+            if(Y){
+                ani_str = `transform:translateY(${Y}px); -webkit-transform:translateY(${Y}px)`
+            }else{
+                ani_str = `transform:translateX(${X}px); -webkit-transform:translateX(${X}px)`
+            }
+            return ani_str
+        },
+
+
+
+
         //渲染结束
         renderEnd:function(dom) {
 
@@ -333,20 +348,34 @@ dayjs.locale('zh-cn')
             this.data.slider.H = box_height
             this.data.slider.W = box_width
 
+
             if(this.data.config.rollDirection == 'LR'){
 	            dom.date_content.style.maxHeight = box_height+'px'
 	            dom.date_content.style.minHeight = box_height+'px'
 
-	            month_box[0].style.transform = "translateX(-"+box_width+"px)"
-	            month_box[1].style.transform = "translateX(0px)"
-	            month_box[2].style.transform = "translateX("+box_width+"px)"
+
+                
+                month_box[0].setAttribute('style', D.callbackAnimation('-'+box_width))
+                month_box[1].setAttribute('style', D.callbackAnimation('0'))
+                month_box[2].setAttribute('style', D.callbackAnimation(box_width))
+
+
+
+	            // month_box[0].style.transform = "translateX(-"+box_width+"px)"
+	            // month_box[1].style.transform = "translateX(0px)"
+	            // month_box[2].style.transform = "translateX("+box_width+"px)"
             }else{
 	            dom.date_content.style.maxHeight = box_height+'px'
 	            dom.date_content.style.minHeight = box_height+'px'
 
-	            month_box[0].style.transform = "translateY(-"+box_height_one+"px)"
-	            month_box[1].style.transform = "translateY(0px)"
-	            month_box[2].style.transform = "translateY("+box_height+"px)"
+                month_box[0].setAttribute('style', D.callbackAnimation(null,'-'+box_height_one))
+                month_box[1].setAttribute('style', D.callbackAnimation(null,'0'))
+                month_box[2].setAttribute('style', D.callbackAnimation(null,box_height_one))
+
+
+	            // month_box[0].style.transform = "translateY(-"+box_height_one+"px)"
+	            // month_box[1].style.transform = "translateY(0px)"
+	            // month_box[2].style.transform = "translateY("+box_height+"px)"
             }
         },
 
@@ -523,7 +552,7 @@ dayjs.locale('zh-cn')
                 month_day = arrMonth[month-1], //得到当月有多少天
                 //row = (month_day == 28 && date_one_week==0) ? 5 : 6 //显示多少行，其实有456行三种情况
                 row = 6, //为防止页面上下跳动，统一渲染6行,
-                today = that.data.today,
+                today = this.data.today,
                 system_year = today.Y, //系统当前的年
                 system_month = today.M, //系统当前的月
                 system_day = today.D, //系统当前的天
@@ -532,10 +561,6 @@ dayjs.locale('zh-cn')
                 const_system_year = constTody.Y,
                 const_system_month = constTody.M,
                 const_system_day = constTody.D
-
-
-
-
 
             //判断是否为当前系统的年-月
             if(system_year == year && system_month == month){
@@ -692,14 +717,14 @@ dayjs.locale('zh-cn')
             var clientY = e.changedTouches[0].clientY,
 	            clientX = e.changedTouches[0].clientX,
                 month_box = dom.date_content.getElementsByClassName('month_box'),
-                translate = window.getComputedStyle(month_box[1], null).getPropertyValue("transform");
+                translate = parseInt(0+month_box[1].getAttribute('style').toString().split(';')[0]),
+                translateY = translate, //一直在获取translateY属性的值
+                translateX = translate
 
-                translate = translate.substring(0,translate.length-1)
-                translate = translate.split(',')
+                //window.getComputedStyle(month_box[1], null).getPropertyValue("transform");  //不兼容ios9以下版本
 
 
-                var translateY = parseInt(translate[5]), //一直在获取translateY属性的值
-                    translateX = parseInt(translate[4])
+                
             //----------
             that.data.slider.Y = clientY
 	        that.data.slider.X = clientX
@@ -721,14 +746,14 @@ dayjs.locale('zh-cn')
 
 
             if(that.data.config.rollDirection == 'LR'){
-	            month_box[0].style.transform = "translateX("+(coordinateX-W)+"px)"
-	            month_box[1].style.transform = "translateX("+coordinateX+"px)"
-	            month_box[2].style.transform = "translateX("+(coordinateX+W)+"px)"
+                month_box[0].setAttribute('style', D.callbackAnimation(coordinateX-W))
+                month_box[1].setAttribute('style', D.callbackAnimation(coordinateX))
+                month_box[2].setAttribute('style', D.callbackAnimation(coordinateX+W))
 
             }else{
-	            month_box[0].style.transform = "translateY("+(coordinateY-H)+"px)"
-	            month_box[1].style.transform = "translateY("+coordinateY+"px)"
-	            month_box[2].style.transform = "translateY("+(coordinateY+H)+"px)"
+                month_box[0].setAttribute('style', D.callbackAnimation(null,coordinateY-H))
+                month_box[1].setAttribute('style', D.callbackAnimation(null,coordinateY))
+                month_box[2].setAttribute('style', D.callbackAnimation(null,coordinateY+H))
             }
         },
         touchendFun:function(e,dom,that) {
@@ -751,39 +776,41 @@ dayjs.locale('zh-cn')
 			        if((clientX - X)<0) {//向左滑动
 				        sliderStatus = 'left'
 				        springback = false
-				        month_box[1].style.transform = "translateX(-"+W+"px)"
-				        month_box[2].style.transform = "translateX(0px)"
+                        month_box[1].setAttribute('style', D.callbackAnimation('-'+W))
+                        month_box[2].setAttribute('style', D.callbackAnimation('0'))
                         month_box[0].innerHTML = ''
 				        month_box[0].outerHTML = '' 
 			        }else{//向右滑动
 				        sliderStatus = 'right'
 				        springback = false
-				        month_box[0].style.transform = "translateX(0px)"
-				        month_box[1].style.transform = "translateX("+W+"px)"
+                        month_box[0].setAttribute('style', D.callbackAnimation('0'))
+                        month_box[1].setAttribute('style', D.callbackAnimation(W))
+
                         month_box[2].innerHTML = ''
 				        month_box[2].outerHTML = ''
 			        }
 
 		        }else{//没有超过弹性值,回弹回去
 			        springback = true
-			        month_box[0].style.transform = "translateX(-"+W+"px)"
-			        month_box[1].style.transform = "translateX(0px)"
-			        month_box[2].style.transform = "translateX("+W+"px)"
+                    month_box[0].setAttribute('style', D.callbackAnimation('-'+W))
+                    month_box[1].setAttribute('style', D.callbackAnimation('0'))
+                    month_box[2].setAttribute('style', D.callbackAnimation(W))
+
 		        }
 	        }else{//纵向滚动
 		        if(proportion > elastic){ //超过了弹性值
 			        if((clientY - Y)>0){//向下滑动
 				        sliderStatus = 'down'
 				        springback = false
-				        month_box[0].style.transform = "translateY(0px)"
-				        month_box[1].style.transform = "translateY("+H+"px)"
+                        month_box[0].setAttribute('style', D.callbackAnimation(null,'0'))
+                        month_box[1].setAttribute('style', D.callbackAnimation(null,H))
                         month_box[2].innerHTML = ''
 				        month_box[2].outerHTML = ''
 			        }else{//向上滑动
 				        sliderStatus = 'up'
 				        springback = false
-				        month_box[1].style.transform = "translateY(-"+H+"px)"
-				        month_box[2].style.transform = "translateY(0px)"
+                        month_box[1].setAttribute('style', D.callbackAnimation(null,'-'+H))
+                        month_box[2].setAttribute('style', D.callbackAnimation(null,'0'))
                         month_box[0].innerHTML = ''
 				        month_box[0].outerHTML = ''  
 			        }
@@ -791,9 +818,11 @@ dayjs.locale('zh-cn')
 		        }else{//没有超过弹性值
 			        //如果弹力不够，则会退回去
 			        springback = true
-			        month_box[0].style.transform = "translateY(-"+H+"px)"
-			        month_box[1].style.transform = "translateY(0px)"
-			        month_box[2].style.transform = "translateY("+H+"px)"
+
+                    month_box[0].setAttribute('style', D.callbackAnimation(null,'-'+H))
+                    month_box[1].setAttribute('style', D.callbackAnimation(null,'0'))
+                    month_box[2].setAttribute('style', D.callbackAnimation(null,H))
+
 		        }
 	        }
 
@@ -806,7 +835,7 @@ dayjs.locale('zh-cn')
 	         */
 	        for(var bi=0;bi<month_box.length;bi++){
             	if(typeof month_box[bi] === 'object'){
-		            month_box[bi].style.transition = "all 0.2s ease-in"
+                    elem.addClass(month_box[bi],'I_animation')
 	            }
 	        }
 
@@ -814,7 +843,7 @@ dayjs.locale('zh-cn')
 	        setTimeout(function () {
 		        for(var boi=0;boi<month_box.length;boi++){
 		        	if(typeof month_box[boi] === 'object'){
-				        month_box[boi].style.transition = "all 0s ease-in"
+                        elem.removeClass(month_box[boi],'I_animation')
 			        }
 		        }
 	        },200)

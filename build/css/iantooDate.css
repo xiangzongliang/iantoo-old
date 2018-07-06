@@ -37,8 +37,8 @@ body {
   display: flex;
   display: -webkit-flex;
   -webkit-justify-content: space-between;
-  font-size: 10px;
   justify-content: space-between;
+  font-size: 10px;
   border-bottom: 1px solid #ececec;
 }
 .iantooDate .date_week a:first-child,
@@ -98,6 +98,10 @@ body {
 }
 .month_box p a.day span {
   background: #ffffff;
+}
+.I_animation {
+  transition: all 0.2s ease-in;
+  -webkit-transition: all 0.2s ease-in;
 }
 @keyframes showBox {
   from {
