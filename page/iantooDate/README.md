@@ -16,6 +16,8 @@ iantoo.date()
 
 ### API
 
+注:[最新官方API文档请点击](http://xiangzongliang.com/toolArr/DOC?tool=99)
+
 #### el
 
 >`type:string`    默认 `body`    `class | id`
