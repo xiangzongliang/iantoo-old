@@ -40,6 +40,8 @@ iantoo.week()
 
 ## API
 
+注:[最新官方API文档请点击](http://xiangzongliang.com/toolArr/DOC?tool=96)
+
 
 ### el
 
