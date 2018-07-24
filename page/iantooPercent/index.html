@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iantooPercent</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi = medium-dpi" />
+<body>
+
+<div style="text-align: center;padding-top: 10%">
+	<canvas id="iantooPercent" style="width: 150px;height: 150px"> </canvas>
+</div>
+
+<style>
+	html,body{
+		margin: 0;
+		padding: 0;
+	}
+</style>
+
+<script type="text/javascript" src="../../build/js/iantooPercent.js"></script>
+<script type="text/javascript">
+	iantoo.percent({
+		el:'iantooPercent',
+
+		//边线
+		line:{
+			size:8, //边线粗细
+			color:'#D3EDFD',    //边线颜色
+
+		},
+
+		//主体旋转部分
+		subject:{
+			size:8, //线条宽度
+			color:'#57C0FD', //线条颜色
+			Start_Position:0,       //起始位置,取值:0,1,2,3 ;按照时钟的时间说明 0:从00点钟方向开始; 1代表是3点钟方向,依此类推 。
+			percentage:0.86,         //百分比
+			content:'跑赢大盘',       //附加显示的文字
+		},
+		perStyle:{  //百分比文字样式
+			fontSize:30,
+			color:'#EF5A3C'
+		},
+		contentStyle:{ //附加显示内容文字样式
+			fontSize:16,
+			color:'#77828C'
+		}
+
+	})
+</script>
+</body>
+</html>
