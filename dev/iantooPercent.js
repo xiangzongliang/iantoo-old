@@ -13,22 +13,31 @@
 				}
 
 				this.data.canvasDom = opction.el || ''
-				this.data.line.size = opction.line.size || 3
-				this.data.line.color = opction.line.color || '#33b5e5'
+				if(opction.line){
+					this.data.line.size =  opction.line.size || 4
+					this.data.line.color = opction.line.color || '#D3EDFD'
+				}
 
-				this.data.subject.size = opction.subject.size || 8
-				this.data.subject.color = opction.subject.color || '#ff8800'
-				this.data.subject.Start_Position = opction.subject.Start_Position || 0
-				this.data.subject.percentage = opction.subject.percentage || 0
-				this.data.subject.content = opction.subject.content || '附加文字'
+				if(opction.subject){
+					this.data.subject.size =  opction.subject.size || 8
+					this.data.subject.color = opction.subject.color || '#57C0FD'
+					this.data.subject.Start_Position =  opction.subject.Start_Position || 0
+					this.data.subject.percentage = opction.subject.percentage || 0
+					this.data.subject.content = opction.subject.content || '附加文字'
+				}
 
 
-				this.data.perStyle.fontSize = opction.perStyle.fontSize || 25
-				this.data.perStyle.color = opction.perStyle.color || '#ff3300'
+				if(opction.perStyle){
+					this.data.perStyle.fontSize = opction.perStyle.fontSize || 30
+					this.data.perStyle.color = opction.perStyle.color || '#EF5A3C'
+				}
 
 
-				this.data.contentStyle.fontSize = opction.contentStyle.fontSize || 14
-				this.data.contentStyle.color = opction.contentStyle.color || '#555555'
+				if(opction.contentStyle){
+					this.data.contentStyle.fontSize = opction.contentStyle.fontSize || 16
+					this.data.contentStyle.color = opction.contentStyle.color || '#77828C'
+				}
+
 
 				this.render();
 			},
@@ -37,23 +46,23 @@
 			data: {
 				canvasDom: '',       //绘图区域主要渲染的区域
 				line: {              //背景线条显示的参数
-					size: '',        //背景线条的宽度
-					color: '',       //背景线条的颜色
+					size: 4,        //背景线条的宽度
+					color: '#D3EDFD',       //背景线条的颜色
 				},
 				subject: {           //主要绘图区域的参数
-					size: '',        //主要圆形的边线大小
-					color: '',       //主要圆形区域的颜色
-					Start_Position: '',  //绘制的起始位置
-					percentage: '',      //百分比
-					content: '',         //附加文字
+					size: 8,        //主要圆形的边线大小
+					color: '#57C0FD',       //主要圆形区域的颜色
+					Start_Position: 0,  //绘制的起始位置
+					percentage: 0.86,      //百分比
+					content: '附加文字',         //附加文字
 				},
 				perStyle: {  //百分比文字样式
-					fontSize: '',
-					color: ''
+					fontSize: 30,
+					color: '#EF5A3C'
 				},
 				contentStyle: { //附加显示内容文字样式
-					fontSize: '',
-					color: ''
+					fontSize: 16,
+					color: '#77828C'
 				}
 			},
 
@@ -74,7 +83,7 @@
 				}
 
 				var Dom_width = canvasDom.offsetWidth,
-					Dom_height = canvasDom.offsetWidth,
+					Dom_height = canvasDom.offsetHeight,
 					radius = ''; //半径
 
 
