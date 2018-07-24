@@ -4,9 +4,9 @@
 	var iantoo = win.iantoo || {},
 		_dom;
 
-	const P = {
+	var P = {
 			//初始化
-			init: function (opction = {}) {
+			init: function (opction) {
 				if (opction == '' || opction.el == undefined || opction.el == '') {
 					console.error('iantoo.percent();缺失参数el')
 					return;
