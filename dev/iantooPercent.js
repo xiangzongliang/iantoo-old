@@ -39,6 +39,8 @@
 				}
 
 
+				this.data.renderDone = opction.renderDone || function () {}
+
 				this.render();
 			},
 
@@ -63,7 +65,9 @@
 				contentStyle: { //附加显示内容文字样式
 					fontSize: 16,
 					color: '#77828C'
-				}
+				},
+				renderDone:'',      //渲染完成回调
+
 			},
 
 
@@ -170,11 +174,33 @@
 						if (PI <= (percentage * 2)) {
 							toer(PI - 0.5, parseInt(Math.ceil(PI * 100) / 2))
 						} else {
+							try{
+								that.data.renderDone({
+									pngImg:canvasDom.toDataURL("image/png", 1.0),
+									jpgImg:canvasDom.toDataURL("image/jpeg", 1.0)
+								})
+							}catch (e){
+								console.log('将canvas转换成图片时出现了错误 ...')
+								console.error(e)
+							}
+
 							clearInterval(interval);
 						}
 
 					}, 10)
 				}
+			},
+			
+			
+			
+			//画图开始
+			mapping:function () {
+				
+			}
+		},
+		E = {
+			update:function () {
+				toer(0.5,50)
 			}
 		}
 
@@ -182,7 +208,7 @@
 	iantoo.percent = function(opction){
 		return new P.init(opction)
 	}
-	// iantoo.percent.__proto__ = E
+	iantoo.percent.__proto__ = E
 	P.init.prototype = P
 	win.iantoo = iantoo
 })(window)
