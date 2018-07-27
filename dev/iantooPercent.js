@@ -189,18 +189,6 @@
 
 					}, 10)
 				}
-			},
-			
-			
-			
-			//画图开始
-			mapping:function () {
-				
-			}
-		},
-		E = {
-			update:function () {
-				toer(0.5,50)
 			}
 		}
 
@@ -208,7 +196,7 @@
 	iantoo.percent = function(opction){
 		return new P.init(opction)
 	}
-	iantoo.percent.__proto__ = E
+	// iantoo.percent.__proto__ = E
 	P.init.prototype = P
 	win.iantoo = iantoo
 })(window)

@@ -10,6 +10,7 @@
 <div style="text-align: center;padding-top: 10%">
 	<canvas id="iantooPercent" style="width: 150px;height: 150px"> </canvas>
 	<div>
+		<p style="color:cadetblue">绘图完成之后</p>
 		<img id="showDate" src="" alt="" style="width: 150px;height: 150px">
 	</div>
 </div>
@@ -21,7 +22,7 @@
 	}
 </style>
 
-<script type="text/javascript" src="../../js/iantooPercent.js"></script>
+<script type="text/javascript" src="../../build/js/iantooPercent.js"></script>
 <script type="text/javascript">
 	iantoo.percent({
 		el:'iantooPercent',
@@ -54,16 +55,10 @@
 			 *      jpgImg:@string    //data:image/jpeg;base64
 			 * }
 			 */
-			document.getElementById('showDate').src = data.pngImg
+			document.querySelector('#showDate').src = data.pngImg
 		}
 
 	})
-
-
-
-setTimeout(function () {
-	iantoo.percent().update()
-},3000)
 
 </script>
 </body>
