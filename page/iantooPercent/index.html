@@ -22,7 +22,7 @@
 	}
 </style>
 
-<script type="text/javascript" src="../../build/js/iantooPercent.js"></script>
+<script type="text/javascript" src="../../js/iantooPercent.js"></script>
 <script type="text/javascript">
 	iantoo.percent({
 		el:'iantooPercent',
@@ -37,7 +37,7 @@
 			size:8, //线条宽度
 			color:'#57C0FD', //线条颜色
 			Start_Position:0,       //起始位置,取值:0,1,2,3 ;按照时钟的时间说明 0:从00点钟方向开始; 1代表是3点钟方向,依此类推 。
-			percentage:0.86,         //百分比
+			percentage:0.23,         //百分比
 			content:'跑赢大盘',       //附加显示的文字
 		},
 		perStyle:{  //百分比文字样式
@@ -48,7 +48,7 @@
 			fontSize:16,
 			color:'#77828C'
 		},
-		renderDone:function (data) {
+		renderDone:function (data) { //canvas渲染完成之后回调
 			/**
 			 * data:{
 			 *      pngImg:@string    //data:image/png;base64

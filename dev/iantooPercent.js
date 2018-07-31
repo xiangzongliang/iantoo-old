@@ -71,14 +71,10 @@
 			},
 
 
-			//页面检查
-			inspect: function () {
-
-			},
 
 
 			//页面渲染
-			render: function () {
+			render () {
 				var that = this,
 					canvasDom = document.querySelector('#' + that.data.canvasDom);
 				if (canvasDom == null) {
@@ -109,7 +105,7 @@
 
 
 
-				function toer(pi, text) {
+				let toer = (pi, text) => {
 					ctx.clearRect(0, 0, Dom_width * 4, Dom_height * 4) //清空画布
 
 					//绘制第一个圆形
@@ -163,30 +159,35 @@
 				}
 
 
+				//渲染完成之后回调页面的图片信息
+				let callBackImg = () => {
+					try{
+						that.data.renderDone({
+							pngImg:canvasDom.toDataURL("image/png", 1.0),
+							jpgImg:canvasDom.toDataURL("image/jpeg", 1.0)
+						})
+					}catch (e){
+						console.log('将canvas转换成图片时出现了错误 ...')
+						console.error(e)
+					}
+				}
+
+
 				var PI = 0,
 					percentage = that.data.subject.percentage;      //要显示的百分比
 
 				if (percentage == 0) {
 					toer(-0.5, 0)
+					callBackImg()
 				} else {
-					var interval = setInterval(function () {
+					var interval = setInterval(() => {
 						PI = PI + 0.01
 						if (PI <= (percentage * 2)) {
 							toer(PI - 0.5, parseInt(Math.ceil(PI * 100) / 2))
 						} else {
-							try{
-								that.data.renderDone({
-									pngImg:canvasDom.toDataURL("image/png", 1.0),
-									jpgImg:canvasDom.toDataURL("image/jpeg", 1.0)
-								})
-							}catch (e){
-								console.log('将canvas转换成图片时出现了错误 ...')
-								console.error(e)
-							}
-
+							callBackImg()
 							clearInterval(interval);
 						}
-
 					}, 10)
 				}
 			}
