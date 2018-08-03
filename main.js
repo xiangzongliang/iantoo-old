@@ -21,6 +21,7 @@ config = {
 		'iantooweek':path.resolve(__dirname, './dev/iantooweek'),
 		'iantooDate':path.resolve(__dirname, './dev/iantooDate'),
 		'iantooPercent':path.resolve(__dirname, './dev/iantooPercent'),
+		'dragRefresh':path.resolve(__dirname, './dev/dragRefresh'),
 	},
 	output: {
 		path: path.resolve(__dirname, './build'), // var buildDir = path.resolve(__dirname, './build');

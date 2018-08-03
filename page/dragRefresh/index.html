@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>iantooPercent</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi = medium-dpi" />
+    <link href="../../build/css/dragRefresh.css" rel="stylesheet"></head>
+<body>
+    <div id="dragRefresh">
+        <div id="dragContent">
+            <ul>
+                <li>213213213</li>
+                <li>hcesihurhsfuehsf</li>
+                <li>3y7q3kqhe3ukqheiu3kq</li>
+                <li>rh4uiqhru4qh</li>
+                <li>rnj34qlr4jql</li>
+            </ul>
+            这是内容区域
+        </div>
+    </div>
+
+<script type="text/javascript" src="../../build/js/dragRefresh.js"></script>
+<script>
+    iantoo.dragRefresh({
+        el:'#dragRefresh',
+        content:'#dragContent',
+        downRefresh:50,         //向下拉动多少距离之后触发刷新回调    
+        upRefresh:50,           //向上拉动多少距离之后触发刷新回调    
+        maxDropdown:300,        //最大向下拉动距离,该距离并不是触发刷新的距离,
+        maxPullup:300,          //最大向上拉动的距离.
+        refresh:function(opction,close){     //拉动到了一定距离出发了刷新功能
+
+        }
+    })
+</script>
+</body>
+</html>
