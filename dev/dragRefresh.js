@@ -45,9 +45,9 @@ let vConsole = new VConsole() // 初始化
 					Y:'',		//点击的坐标Y
 					moveX:'',	//横着移动的距离
 					moveY:'',	//竖着移动的距离
-					twoTrigger:false,		//用于控制二次点击
+					twoTrigger:0,		//用于控制二次点击
 				},
-				moveArr:[0,0,0]
+				moveArr:[0,0,0,0,0]		//	记录用户滚动屏幕时候的坐标,并得出惯性值
 			},
 
 
@@ -88,99 +88,191 @@ let vConsole = new VConsole() // 初始化
 
 			//touch事件处理
 			touchstartFun(t){
-				console.log(11)
+				this.data.touch.twoTrigger++
 
-				this.data.touch.twoTrigger = false
-				this.data.touch.X = t.changedTouches[0].clientX
-				this.data.touch.Y = t.changedTouches[0].clientY
+
+				//避免多个指头滑动的时候出现的跳屏现象
+				if(this.data.touch.twoTrigger<=1){
+					this.data.touch.X = t.changedTouches[0].clientX
+					this.data.touch.Y = t.changedTouches[0].clientY
+				}
 			},
 			touchmoveFun(t){
+				if(this.data.touch.twoTrigger<=1){
+					
+					//记录每次滑动的最后三次位移
+					this.data.moveArr.pop()
+					this.data.moveArr.unshift(t.changedTouches[0].clientY)
 
-				//记录每次滑动的最后三次位移
-				this.data.moveArr.pop()
-				this.data.moveArr.unshift(t.changedTouches[0].clientY)
+					let touchX = this.data.touch.X,
+						touchY = this.data.touch.Y,
+						top = this.data.pageInfo.top,
+						clientX = t.changedTouches[0].clientX,
+						clientY = t.changedTouches[0].clientY,
+						that = this
 
-				let touchX = this.data.touch.X,
-					touchY = this.data.touch.Y,
-					top = this.data.pageInfo.top,
-					clientX = t.changedTouches[0].clientX,
-					clientY = t.changedTouches[0].clientY,
-					that = this
-
-				
-					this.dom.selectDom.setAttribute(`style`,that.transformFun({
-						coordinate:`Y`,					//坐标
-						distance:clientY - touchY + top,		//距离
-						time:0,						//时间
-						effect:`ease-in`				//效果
-					}))
+					
+						this.dom.selectDom.setAttribute(`style`,that.transformFun({
+							coordinate:`Y`,					//坐标
+							distance:clientY - touchY + top,		//距离
+							time:0,						//时间
+							effect:`ease-in`				//效果
+						}))
+				}
 
 
 			},
-			touchendFun(t){
-				console.log('chufale end时间')
-				this.data.touch.twoTrigger = true
-				console.log(this.data.moveArr)
-				this.data.moveArr = [0,0,0]
-				console.log('end+'+t.changedTouches[0].clientY)
-				let touchX = this.data.touch.X,
-					touchY = this.data.touch.Y,
-					top = this.data.pageInfo.top,
-					clientX = t.changedTouches[0].clientX,
-					clientY = t.changedTouches[0].clientY,
-					that = this
-				
-				//向下拉动松开之后
-				if((clientY-touchY)>=0){ //如果是下拉刷新活滚动
+			touchendFun(t){	
+				if(this.data.touch.twoTrigger<=1){
+					let touchX = this.data.touch.X,
+						touchY = this.data.touch.Y,
+						top = this.data.pageInfo.top, //没有移动前的顶部距离
+						clientX = t.changedTouches[0].clientX,
+						clientY = t.changedTouches[0].clientY,
+						that = this,
+						moveArr = this.data.moveArr, // 得到惯性分析用的数组
+						selectDomHeight = that.dom.selectDom.offsetHeight,  //页面内容区域的总高度
+						pageHeight = document.querySelector('#dragRefresh').offsetHeight || window.screen.height || window.screen.availHeight, //屏幕的高度
+						downInertia = 0,	//下拉的惯性值
+						upInertia = 0		//上滑的惯性值
 
-					if((clientY-touchY) > (-1*top)){ //下拉刷新
-						that.dom.selectDom.setAttribute(`style`,that.transformFun({
-							coordinate:`Y`,					//坐标
-							distance:0,		//距离
-							time:0.3,						//时间
-							effect:`ease-out`				//效果
-						}))
-						that.data.pageInfo.top = 0
-	
-						setTimeout(()=>{
+						this.data.moveArr = [0,0,0,0,0]  //继续将记录分析的数组初始化
+
+
+						//分析用户在屏幕上滚动的最后得到的数组,并计算出惯性值
+						let inertia = IA.inertiaCalc(moveArr,pageHeight)
+
+
+
+					
+
+
+
+
+
+
+
+					//向下拉动松开之后
+					if((clientY-touchY)>=0){ //如果是下拉刷新活滚动
+
+						if((clientY-touchY) > (-1*top)){ //下拉刷新
+
+							console.log('下拉刷新')
 							that.dom.selectDom.setAttribute(`style`,that.transformFun({
 								coordinate:`Y`,					//坐标
 								distance:0,		//距离
-								time:0,						//时间
+								time:0.3,						//时间
 								effect:`ease-out`				//效果
 							}))
-						},300)
-					}else{ //下拉滚动
-						that.data.pageInfo.top = (clientY - touchY) + top
+							that.data.pageInfo.top = 0
+		
+							setTimeout(()=>{
+								that.dom.selectDom.setAttribute(`style`,that.transformFun({
+									coordinate:`Y`,					//坐标
+									distance:0,		//距离
+									time:0,						//时间
+									effect:`ease-out`				//效果
+								}))
+							},300)
+
+
+
+
+
+
+
+
+
+
+
+						}else{ //下拉滚动
+
+							console.log('下拉滚动')
+							
+							//惯性滑动不能滑到屏幕外面
+							if(((clientY - touchY) + top + inertia)>0){
+								downInertia = 0
+							}else{
+								downInertia = (clientY - touchY) + top + inertia
+							}
+
+
+
+							//重新赋值top
+							that.data.pageInfo.top = downInertia
+
+
+
+							this.dom.selectDom.setAttribute(`style`,that.transformFun({
+								coordinate:`Y`,					//坐标
+								distance:downInertia,		//距离
+								time:1.5,						//时间
+								effect:`cubic-bezier(.26,.52,.66,.91)`				//效果
+							}))
+						}
+						
+
+
+					}else{ //向上滚动
+						
+						//每次下拉重新获取内容的高度,避免异步数据加载
+						
+						let contentTop = clientY - touchY + top + (-1*pageHeight) 	//最顶部距离屏幕顶部的距离
+						that.data.pageInfo.contentH = selectDomHeight
+
+
+						if(contentTop < (-1*selectDomHeight)){ //上拉加载
+
+
+
+
+							//重置top值
+							that.data.pageInfo.top = -1*(selectDomHeight - pageHeight)
+							//设置回滚
+							that.dom.selectDom.setAttribute(`style`,that.transformFun({
+								coordinate:`Y`,					//坐标
+								distance:-1*(selectDomHeight - pageHeight),		//距离
+								time:0.3,						//时间
+								effect:`ease-out`				//效果
+							}))
+
+							
+
+
+
+
+
+
+
+						}else{
+
+							console.log('上拉滚动')
+							console.log(inertia)
+
+							//惯性滑动不能滑到屏幕外面
+							let m_top = (clientY - touchY) + top,
+								max_top = -1*(selectDomHeight-pageHeight)
+							if(m_top < max_top){
+								upInertia = max_top
+							}else{
+								upInertia = (clientY - touchY) + top
+							}
+
+							//重新复制top
+							that.data.pageInfo.top = upInertia
+
+							this.dom.selectDom.setAttribute(`style`,that.transformFun({
+								coordinate:`Y`,					//坐标
+								distance:upInertia,		//距离
+								time:1.5,						//时间
+								effect:`cubic-bezier(.26,.52,.66,.91)`				//效果
+							}))	
+						}
 					}
-					
-
-
-				}else{ //向上滚动
-					
-					//每次下拉重新获取内容的高度,避免异步数据加载
-					let selectDomHeight = that.dom.selectDom.offsetHeight,
-						pageHeight = document.querySelector('#dragRefresh').offsetHeight || window.screen.availHeight || window.screen.height,
-						contentTop = clientY-touchY+top+(-1*pageHeight) 	//最顶部距离屏幕顶部的距离
-					that.data.pageInfo.contentH = selectDomHeight
-
-
-					if(contentTop < (-1*selectDomHeight)){ //上拉加载
-
-						//设置回滚
-						that.dom.selectDom.setAttribute(`style`,that.transformFun({
-							coordinate:`Y`,					//坐标
-							distance:-1*(selectDomHeight - pageHeight),		//距离
-							time:0.3,						//时间
-							effect:`ease-out`				//效果
-						}))
-
-						//重置top值
-						that.data.pageInfo.top = -1*(selectDomHeight - pageHeight)
-					}else{
-						that.data.pageInfo.top = (clientY - touchY) + top
-					}
+					this.data.touch.twoTrigger--
 				}
+				
+
 			},
 
 

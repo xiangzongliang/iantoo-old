@@ -22,6 +22,18 @@ module.exports = {
                     opction.callback(a_tatol-fiboNum)
                 } 
             },10)
+    },
+
+
+    //通过数组计算惯性值
+    inertiaCalc(arr,height){
+        console.log(arr)
+        let [leve1,leve2,leve3,leve4] = [(arr[0]-arr[1]),(arr[1]-arr[2]),(arr[2]-arr[3]),(arr[3]-arr[4])],
+        average = (leve1+leve2+leve3+leve4)/4           //求平均值
+
+        console.warn('平均值'+average)
+
+        return parseInt(height/20*average)
     }
 }
 
