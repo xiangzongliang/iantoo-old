@@ -1,41 +1,46 @@
-*,html,body{
-    margin: 0;
-    padding: 0
-}
-#iantooDragRefresh{
-    top: 0px;
-    left: 0px;
-    background: none
-}
-#dragRefreshLoading{
-    position: fixed;
+
+#dragRefresh{
     width: 100%;
     height: 100%;
+    position: fixed;
     top: 0px;
     left: 0px;
-    z-index: -100;
+    background: none;
+    overflow: hidden;
+    z-index: -1;
 }
-#iantooTopLoading,#iantooBottomLoading{
+#dragContent{
+    width: 100%;
+    position: relative;
+}
+
+// 下拉加载模块loading的样式
+.iantooTopRefreshDom,.iantooBottomRefreshDom{
+    position: absolute;
+    left: 0px;
+    width: 100%;
     text-align: center;
-    font-size: 14px;
     height: 60px;
     line-height: 60px;
-    background: none;
-    position: absolute;
-    width: 100%;
-    color: #9c9c9c;
+    display: block;
+    color: #828282;
+    font-size: 14px;
+    box-sizing: border-box;
     span{
+        line-height: 30px;
+        top: 0px;
+        display: inline-block;
+        height: 30px;
         margin-left: 10px;
     }
-
 }
-#iantooTopLoading{
+.iantooTopRefreshDom{
     top: -60px;
 }
-#iantooBottomLoading{
-    bottom:-60px
+.iantooBottomRefreshDom{
+    bottom: -60px;
 }
-#iantooTopLoading i,#iantooBottomLoading i{
+.iantooRefreshLoadingimg{
     width: 16px;
     height: 16px;
     display: inline-block;
