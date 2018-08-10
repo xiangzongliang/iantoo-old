@@ -213,27 +213,30 @@ import elem from './lib/elem.js'
 					}
 					
 					
-					
 					if(this.data.isUp === false){
-						//如果已经拉到底部了
-						if(scrollTop >= (C_obj.contentH - C_obj.boxH)){
-							this.dom.bottomSpan.innerText = '继续上拉加载更多'
-							this.dom.bottomImg.style.display = 'none'
-							//设置底部loading的高度的同时也设置滚动条的位置，
-							this.dom.iantooBottomLoading.style.bottom = -60 - C_obj.translateY +'px'
-							if(C_obj.translateY < -60){ //触发了上拉加载
-								this.data.isUp = true
-								this.dom.iantooBottomLoading.style.bottom = '0px'
+						//页面必须有滚动的时候才能触发上拉加载
+						if(C_obj.contentH >= C_obj.boxH){
+							//如果已经拉到底部了
+							if(scrollTop >= (C_obj.contentH - C_obj.boxH)){
+								this.dom.bottomSpan.innerText = '继续上拉加载更多'
+								this.dom.bottomImg.style.display = 'none'
+								//设置底部loading的高度的同时也设置滚动条的位置，
+								this.dom.iantooBottomLoading.style.bottom = -60 - C_obj.translateY +'px'
+								if(C_obj.translateY < -60){ //触发了上拉加载
+									this.data.isUp = true
+									this.dom.iantooBottomLoading.style.bottom = '0px'
 
-								//重新设置底部加载文字和图标样式
-								this.dom.bottomSpan.innerText = this.data.upDragText
-								this.dom.bottomImg.style.display = 'inline-block'
+									//重新设置底部加载文字和图标样式
+									this.dom.bottomSpan.innerText = this.data.upDragText
+									this.dom.bottomImg.style.display = 'inline-block'
 
 
-								//触发了上拉加载的回调
-								this.data.upRefresh()
+									//触发了上拉加载的回调
+									this.data.upRefresh()
+								}
 							}
 						}
+						
 					}
 
 

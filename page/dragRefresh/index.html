@@ -9,7 +9,7 @@
 <body>
     <style>
         #dragContent li{
-            height: 300px;
+            height: 200px;
             line-height: 300px;
             background: #33b5e5;
             border-top: 2px solid #c4c4c4
@@ -24,14 +24,9 @@
         <div id="dragContent">
             <ul>
                 <li onClick="closeDownFun()">关闭下拉刷新</li>
-                <li>3211111132</li>
-                <li>763281678216373y721h8</li>
-                <li>u321j32i1j</li>
-                <li onClick="closeUpFun()">关闭上拉加载</li>
+                <li onClick="closeUpFun()">关闭上拉加载</li> 
             </ul>
         </div>
-       
-        
     </div> 
     
 
@@ -68,6 +63,26 @@
             //关闭了上拉加载
         }
     })
+
+
+    //测试异步加载的数据
+    setTimeout(function(){
+        document.querySelector('#dragContent').innerHTML = `
+        <ul>
+                <li onClick="closeDownFun()">关闭下拉刷新</li>
+                <li>3211111132</li>
+                <li>763281678216373y721h8</li>
+                <li>u321j32i1j</li>
+                <li>dnjadnjakndjakld</li>
+                <li>dnjsandjsandjska</li>
+                <li>ndjsknvjknvjfka</li>
+                <li>ncjskjfdksnvjkfdsv</li>
+                <li>ncjdsalnejdknajke</li>
+                <li onClick="closeUpFun()">关闭上拉加载</li> 
+            </ul>
+        `
+
+    },3000)
 
     //扩展方法
     /**
