@@ -53,6 +53,9 @@ import elem from './lib/elem.js'
 
 				isIdenDown:true,	//用于判断没有触发下拉刷新的时候下拉的跳屏现象
 				isIdenUp:true,		//同上
+
+				isDownClose:false,	//为了避免网络过快，关闭了下拉加载，所以将触发方法放在end里面，来避免重复触发时
+				isUpClose:false,
 			},
 			dom:{
 				iantooDragRefresh:'',	//最外层的下拉刷新框
@@ -145,6 +148,12 @@ import elem from './lib/elem.js'
 					//处理跳屏现象
 					this.data.isIdenDown = this.data.isDown === true ? true : false
 					this.data.isIdenUp = this.data.isUp === true ? true : false
+
+
+
+
+					this.data.isUpClose = false
+					this.data.isDownClose =false
 					
 
 
@@ -192,21 +201,20 @@ import elem from './lib/elem.js'
 
 					//如果已经处于没有被下拉刷新状态
 					if(this.data.isDown === false){
-						if(C_obj.translateY <= 60){
-							this.dom.iantooTopLoading.style.top = C_obj.translateY - 60 +'px'
+						if(C_obj.translateY <= 100){
+							let toploading = (C_obj.translateY - 60)>=0 ? 0 : (C_obj.translateY - 60);
+							
+							this.dom.iantooTopLoading.style.top = toploading +'px'
 							this.dom.topSpan.innerText = '继续下拉刷新页面'
 							this.dom.topImg.style.display = 'none'
 						}else{
 							this.data.isDown = true
+							this.data.isDownClose = true
 							this.dom.iantooTopLoading.style.top = '0px'
 
 							//修改提示文字与图标样式
 							this.dom.topSpan.innerText = this.data.downDragText
 							this.dom.topImg.style.display = 'inline-block'
-
-
-							//触发了下拉刷新的回调
-							this.data.downRefresh()
 						}
 						
 					//如果已经处于没有被上拉加载的状态
@@ -220,19 +228,17 @@ import elem from './lib/elem.js'
 							if(scrollTop >= (C_obj.contentH - C_obj.boxH)){
 								this.dom.bottomSpan.innerText = '继续上拉加载更多'
 								this.dom.bottomImg.style.display = 'none'
-								//设置底部loading的高度的同时也设置滚动条的位置，
-								this.dom.iantooBottomLoading.style.bottom = -60 - C_obj.translateY +'px'
-								if(C_obj.translateY < -60){ //触发了上拉加载
+								
+								let bottomLoading = (-60 - C_obj.translateY)>=0 ? 0 :(-60 - C_obj.translateY)
+								this.dom.iantooBottomLoading.style.bottom = bottomLoading +'px'
+								if(C_obj.translateY < -100){ //触发了上拉加载
 									this.data.isUp = true
+									this.data.isUpClose = true
 									this.dom.iantooBottomLoading.style.bottom = '0px'
 
 									//重新设置底部加载文字和图标样式
 									this.dom.bottomSpan.innerText = this.data.upDragText
 									this.dom.bottomImg.style.display = 'inline-block'
-
-
-									//触发了上拉加载的回调
-									this.data.upRefresh()
 								}
 							}
 						}
@@ -260,14 +266,22 @@ import elem from './lib/elem.js'
 					event.stopPropagation(); //停止事件传播
 					C_obj.translateY = 0;
 
-					this.dom.dragContent.style.WebkitTransition = this.dom.dragContent.style.transition = 'transform 500ms cubic-bezier(0.1, 0.57, 0.1, 1)';
+					this.dom.dragContent.style.WebkitTransition = this.dom.dragContent.style.transition = 'transform 1s cubic-bezier(0.1, 0.57, 0.1, 1)';
 
 
 					//如果没有触发了下拉刷新
 					if(this.data.isDown === true){
 						D.animate(60);
+						//触发了下拉刷新的回调
+						if(this.data.isDownClose === true){
+							this.data.downRefresh()
+						}
 					}else if(this.data.isUp === true){
 						D.animate(-60);
+						//触发了上拉加载的回调
+						if(this.data.isUpClose){
+							this.data.upRefresh()
+						}	
 					}else{
 						this.dom.iantooTopLoading.setAttribute('style',`top:-60px;transition: all 0.2s ease-out`)
 						this.dom.iantooBottomLoading.setAttribute('style',`bottom:-60px;transition: all 0.2s ease-out`)
@@ -288,11 +302,15 @@ import elem from './lib/elem.js'
 			}else{
 				D.dom.topSpan.innerText = '刷新失败'
 			}
-			D.dom.iantooTopLoading.setAttribute('style',`top:-60px;transition: all 0.3s ease-out`)
-			D.animate(0)
 			D.data.isDown = false
+			D.data.isDownClose = false
+			setTimeout(()=>{
+				D.dom.iantooTopLoading.setAttribute('style',`top:-60px;transition: all 1s ease-out`)
+				D.animate(0)
+			},200)
 			//触发关闭下拉刷新
 			D.data.closeDown()
+
 		},
 		closeUp(opction){
 			if(opction == true){
@@ -300,10 +318,14 @@ import elem from './lib/elem.js'
 			}else{
 				D.dom.bottomSpan.innerText = '加载失败'
 			}
-			D.dom.iantooBottomLoading.setAttribute('style',`bottom:-60px;transition: all 0.3s ease-out`)
-			D.animate(0)
+			
 			D.data.isUp = false
+			D.data.isUpClose = false
 			//触发上拉加载的回调
+			setTimeout(()=>{
+				D.dom.iantooBottomLoading.setAttribute('style',`bottom:-60px;transition: all 1s ease-out`)
+				D.animate(0)
+			},200)
 			D.data.closeUp()
 		},
 		updata(opction){
